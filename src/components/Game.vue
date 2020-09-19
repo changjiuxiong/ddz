@@ -48,7 +48,7 @@
     </div>
 
       <div style="position: fixed;bottom:0;width: 100%;height: 100px;padding-left:100px;">
-          <div @click="pickPoker(item)" v-for="item in game.playerList[0].pokerList" :class="{ selected: item.selected }" class="poker" style="">
+          <div @mouseenter="enter($event,item)" @mousedown="pickPoker(item)" v-for="item in game.playerList[0].pokerList" :class="{ selected: item.selected }" class="poker" style="">
               {{item.text}}
           </div>
       </div>
@@ -128,7 +128,11 @@ export default {
     this.data = this.game.playerList[1].name;
   },
   methods:{
-
+      enter: function(e, poker){
+          if(e.buttons === 1){
+              this.pickPoker(poker);
+          }
+      },
 
       pickPoker(poker){
           if(!poker.selected){
