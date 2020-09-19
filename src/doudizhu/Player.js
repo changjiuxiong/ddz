@@ -39,12 +39,15 @@ class Player{
 
     playByAI(){
 
-        let lastObj = this.getLastObj();
-        if(lastObj){
-            this.playByObj(lastObj);
-        }else{
-            this.playByAllType();
-        }
+        let that = this;
+        setTimeout(function () {
+            let lastObj = that.getLastObj();
+            if(lastObj){
+                that.playByObj(lastObj);
+            }else{
+                that.playByAllType();
+            }
+        },1000);
 
     }
 
@@ -818,11 +821,21 @@ class Player{
     }
 
     playByPokerList(pokerList){
+        if(this.game.currentPlayer!==this){
+            alert('请等待 '+this.game.currentPlayer.name+' 出牌');
+            return false;
+        }
+
         let list = this.getListByList(pokerList);
         return this.handleList(list);
     }
 
     playByString(str){
+        if(this.game.currentPlayer!==this){
+            alert('请等待 '+this.game.currentPlayer.name+' 出牌');
+            return false;
+        }
+
         let list = this.getListByString(str);
         return this.handleList(list);
     }
