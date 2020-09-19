@@ -47,19 +47,21 @@
       <button @click="reStart">reStart</button>
     </div>
 
-      <div style="position: fixed;bottom:0;width: 100%;height: 100px;padding-left:100px;">
+      <div :style="{ marginLeft: playerMarginLeft + 'px' }" style="position: fixed;bottom:0;width: 100%;height: 200px;">
           <div @mouseenter="enter($event,item)" @mousedown="pickPoker(item)" v-for="item in game.playerList[0].pokerList" :class="{ selected: item.selected }" class="poker" style="">
               {{item.text}}
           </div>
       </div>
 
-      <div style="position: fixed;bottom:100px;width: 100%;height: 50px;padding-left:100px;text-align:left;">
-          <button @click="sendPoker2" style="height: 30px;border-radius: 4px;">出牌</button>
-          <button @click="pass" style="height: 30px;border-radius: 4px;margin-left: 20px;">不出</button>
+      <div style="position: fixed;bottom:200px;width: 100%;height: 100px;text-align:left;">
+          <div :style="{ marginLeft: buttonMarginLeft + 'px' }" style="width: 200px;height: 30px;">
+              <button @click="sendPoker2" style="height: 30px;border-radius: 4px;float:left">出牌</button>
+              <button @click="pass" style="height: 30px;border-radius: 4px;margin-left: 20px;float:right">不出</button>
+          </div>
       </div>
 
-      <div style="position: fixed;bottom:200px;width: 100%;height: 100px;padding-left:100px;">
-          <div v-for="item in deskPoker" style="height:100%;width:50px;border: solid 1px;border-radius: 8px;float: left;margin-left:-25px;background-color: azure">
+      <div :style="{ marginLeft: deskPokerMarginLeft + 'px' }" style="position: fixed;bottom:400px;width: 100%;height: 200px">
+          <div v-for="item in deskPoker" style="height:100%;width:100px;border: solid 1px;border-radius: 8px;float: left;margin-left:-50px;background-color: azure">
               {{item.text}}
           </div>
       </div>
@@ -80,6 +82,16 @@ export default {
     }
   },
   computed: {
+
+      playerMarginLeft: function(){
+          return (window.innerWidth - (this.game.playerList[0].pokerList.length*50))/2;
+      },
+      deskPokerMarginLeft: function(){
+          return (window.innerWidth - (this.deskPoker.length*50))/2;
+      },
+      buttonMarginLeft: function(){
+          return (window.innerWidth - 200)/2;
+      },
 
       deskPoker: function(){
           if(this.game.deskPokerObj && this.game.deskPokerObj.poker){
@@ -179,7 +191,7 @@ export default {
 
 <style scoped>
     .poker{
-        height:100%;width:50px;border: solid 1px;border-radius: 8px;float: left;margin-left:-25px;background-color: azure;
+        height:100%;width:100px;border: solid 1px;border-radius: 8px;float: left;margin-left:-50px;background-color: azure;
     }
     .poker:hover{
         background-color: antiquewhite;
