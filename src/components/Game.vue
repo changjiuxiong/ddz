@@ -57,12 +57,50 @@
           <div :style="{ marginLeft: buttonMarginLeft + 'px' }" style="width: 200px;height: 30px;">
               <button @click="sendPoker2" style="height: 30px;border-radius: 4px;float:left">出牌</button>
               <button @click="pass" style="height: 30px;border-radius: 4px;margin-left: 20px;float:right">不出</button>
+              <div v-show="game.currentPlayer===game.playerList[0]" style="color: red;width:150px;border: solid;border-radius: 4px;float: left">
+                  请在{{game.second}}秒内出牌
+              </div>
           </div>
       </div>
 
       <div :style="{ marginLeft: deskPokerMarginLeft + 'px' }" style="position: fixed;bottom:400px;width: 100%;height: 200px">
-          <div v-for="item in deskPoker" style="height:100%;width:100px;border: solid 1px;border-radius: 8px;float: left;margin-left:-50px;background-color: azure">
+          <div v-show="deskPoker.length>0" v-for="item in deskPoker" style="height:100%;width:100px;border: solid 1px;border-radius: 8px;float: left;margin-left:-50px;background-color: azure">
               {{item.text}}
+          </div>
+          <div v-show="deskPoker.length===0" style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;">
+              pass
+          </div>
+      </div>
+
+      <div style="position: fixed;top:40px;left: 20px;height:200px;width:100px;border: solid 1px;border-radius: 8px;background-color: azure;text-align: center">
+          <p>
+              {{game.playerList[2].type==='nongmin'?'农民':'地主'}}
+          </p>
+          <p>
+              {{game.playerList[2].name}}
+          </p>
+          <p>
+              剩余 {{game.playerList[2].pokerList.length}} 张
+          </p>
+
+          <div v-show="game.currentPlayer===game.playerList[2]" style="color: red;width:150px;border: solid;border-radius: 4px;position: absolute;bottom:-50px;left: 0">
+              请在{{game.second}}秒内出牌
+          </div>
+      </div>
+
+
+      <div style="position: fixed;top:40px;right: 20px;height:200px;width:100px;border: solid 1px;border-radius: 8px;background-color: azure;text-align: center">
+          <p>
+              {{game.playerList[1].type==='nongmin'?'农民':'地主'}}
+          </p>
+          <p>
+              {{game.playerList[1].name}}
+          </p>
+          <p>
+              剩余 {{game.playerList[1].pokerList.length}} 张
+          </p>
+          <div v-show="game.currentPlayer===game.playerList[1]" style="color: red;width:150px;border: solid;border-radius: 4px;position: absolute;bottom:-50px;right: 0">
+              请在{{game.second}}秒内出牌
           </div>
       </div>
   </div>

@@ -9,6 +9,7 @@ class Game{
         this.oldPokerList = [];
         this.currentPlayer = [];
         this.dizhu = null;
+        this.second = 20;
 
         this.init();
     }
@@ -21,7 +22,29 @@ class Game{
         this.start();
     }
 
+    resetTime(){
+        this.second = 20;
+    }
+
+    timeLoop(){
+        this.second--;
+
+        if(this.second === 0){
+            this.timeout();
+        }
+
+        let that = this;
+        setTimeout(function () {
+            that.timeLoop();
+        },1000);
+    }
+
+    timeout(){
+        this.currentPlayer.playByString('pass');
+    }
+
     start(){
+        this.timeLoop();
         this.currentPlayer = this.dizhu;
         if(this.currentPlayer.isRobot){
             this.currentPlayer.playByAI();
@@ -34,6 +57,7 @@ class Game{
             this.gameOver();
             return;
         }
+        this.resetTime();
         this.currentPlayer = this.currentPlayer.next;
         if(this.currentPlayer.isRobot){
             this.currentPlayer.playByAI();
