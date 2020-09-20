@@ -3,19 +3,14 @@
     <div style="width: 300px;height:300px;float: left; position: fixed ; left: 0; top: 0px; background-color: aliceblue; text-align: center">
         <span>
             手牌：{{player2Str[1]}}
-            <br/>
-            上次出牌：{{player2Str[2]}}
         </span>
     </div>
 
     <div style="width: 300px;height:300px;float: left; position: fixed ; right: 0; top: 0px; background-color: aliceblue; text-align: center">
         <span>
             手牌：{{player1Str[1]}}
-            <br/>
-            上次出牌：{{player1Str[2]}}
         </span>
     </div>
-
 
     <div style="width: 300px;height:300px;float: left; position: fixed ; left: 600px; top: 0px; background-color: aliceblue; text-align: center">
       <div style="width: 300px;word-wrap: break-word;">
@@ -48,11 +43,13 @@
           </div>
       </div>
 
-      <div :style="{ marginLeft: deskPokerMarginLeft + 'px' }" style="position: fixed;bottom:400px;width: 100%;height: 200px">
-          <div v-show="deskPoker.length>0" v-for="item in deskPoker" class="pokerDesk">
+      <div v-if="game.playerList[0].lastSendObj&&game.playerList[0].lastSendObj.poker[0].text" :style="{ marginLeft: deskPokerMarginLeft + 'px' }" style="position: fixed;bottom:350px;width: 100%;height: 200px">
+          <div v-for="item in game.playerList[0].lastSendObj.poker" class="pokerDesk">
               {{item.text}}
           </div>
-          <div v-show="deskPoker.length===0" style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;">
+      </div>
+      <div v-if="game.playerList[0].lastSendObj&&!game.playerList[0].lastSendObj.poker[0].text" :style="{ marginLeft: deskPokerMarginLeft + 'px' }" style="position: fixed;bottom:350px;width: 100%;height: 200px">
+          <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;">
               pass
           </div>
       </div>
@@ -72,7 +69,16 @@
               请在{{game.second}}秒内出牌
           </div>
       </div>
-
+      <div v-if="game.playerList[2].lastSendObj&&game.playerList[2].lastSendObj.poker[0].text" style="position: fixed;top:100px;left:200px;height: 200px;">
+          <div v-for="item in game.playerList[2].lastSendObj.poker" class="pokerDesk">
+              {{item.text}}
+          </div>
+      </div>
+      <div v-if="game.playerList[2].lastSendObj&&!game.playerList[2].lastSendObj.poker[0].text" style="position: fixed;top:100px;left:200px;height: 200px;">
+          <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;">
+              pass
+          </div>
+      </div>
 
       <div style="position: fixed;top:40px;right: 20px;height:200px;width:100px;border: solid 1px;border-radius: 8px;background-color: azure;text-align: center">
           <p>
@@ -88,6 +94,17 @@
               请在{{game.second}}秒内出牌
           </div>
       </div>
+      <div v-if="game.playerList[1].lastSendObj&&game.playerList[1].lastSendObj.poker[0].text" style="position: fixed;top:100px;right:200px;height: 200px;">
+          <div v-for="item in game.playerList[1].lastSendObj.poker" class="pokerDesk">
+              {{item.text}}
+          </div>
+      </div>
+      <div v-if="game.playerList[1].lastSendObj&&!game.playerList[1].lastSendObj.poker[0].text" style="position: fixed;top:100px;right:200px;height: 200px;">
+          <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;">
+              pass
+          </div>
+      </div>
+
   </div>
 </template>
 
@@ -110,7 +127,7 @@ export default {
           return (window.innerWidth - (this.game.playerList[0].pokerList.length*50))/2;
       },
       deskPokerMarginLeft: function(){
-          return (window.innerWidth - (this.deskPoker.length*50))/2;
+          return (window.innerWidth - (this.game.playerList[0].lastSendObj.poker.length*50))/2;
       },
       buttonMarginLeft: function(){
           return (window.innerWidth - 200)/2;
