@@ -1,52 +1,37 @@
 <template>
   <div style="user-select: none">
-    <div style="width: 300px;height:300px;float: left; position: fixed ; left: 0px; top: 0px; background-color: aliceblue; text-align: center">
+    <div style="width: 300px;height:300px;float: left; position: fixed ; left: 0; top: 0px; background-color: aliceblue; text-align: center">
         <span>
-            {{player2Str[0]}}
-            </br>
-            {{player2Str[1]}}
-            </br></br>
-            {{player2Str[2]}}
+            手牌：{{player2Str[1]}}
+            <br/>
+            上次出牌：{{player2Str[2]}}
         </span>
     </div>
+
+    <div style="width: 300px;height:300px;float: left; position: fixed ; right: 0; top: 0px; background-color: aliceblue; text-align: center">
+        <span>
+            手牌：{{player1Str[1]}}
+            <br/>
+            上次出牌：{{player1Str[2]}}
+        </span>
+    </div>
+
 
     <div style="width: 300px;height:300px;float: left; position: fixed ; left: 600px; top: 0px; background-color: aliceblue; text-align: center">
-        <span>
-            {{player1Str[0]}}
-            </br>
-            {{player1Str[1]}}
-            </br></br>
-            {{player1Str[2]}}
-        </span>
-    </div>
-
-    <div style="width: 300px;height:300px;float: left; position: fixed ; left: 300px; top: 300px; background-color: aliceblue; text-align: center">
-        <span>
-            {{player0Str[0]}}
-            </br>
-            {{player0Str[1]}}
-            </br></br>
-            {{player0Str[2]}}
-        </span>
-      <div>
-        <input v-model="playerStr" type="text"/>
-        <button @click="sendPoker">send</button>
-        <button @click="pass">pass</button>
-      </div>
-    </div>
-
-    <div style="width: 300px;height:300px;float: left; position: fixed ; left: 300px; top: 0px; background-color: aliceblue; text-align: center">
       <div style="width: 300px;word-wrap: break-word;">
-          {{deskStr[0]}}
-          </br>
+          已出的牌：
+          <br/>
           {{deskStr[1]}}
       </div>
     </div>
 
-    <div style="position: fixed;left: 300px;top: 600px;">
-      <button @click="reStart">reStart</button>
+    <div style="position: fixed;left: 600px;top: 300px;">
+      <button @click="reStart">开始新一局</button>
     </div>
 
+      <div :style="{ marginLeft: playerMarginLeft-150 + 'px' }" style="position: fixed;bottom:0;width: 100%;height: 200px;line-height: 200px;">
+          你是 {{game.playerList[0].type==='nongmin'?'农民':'地主'}}
+      </div>
       <div :style="{ marginLeft: playerMarginLeft + 'px' }" style="position: fixed;bottom:0;width: 100%;height: 200px;">
           <div @mouseenter="enter($event,item)" @mousedown="pickPoker(item)" v-for="item in game.playerList[0].pokerList" :class="{ selected: item.selected }" class="poker" style="">
               {{item.text}}
@@ -64,7 +49,7 @@
       </div>
 
       <div :style="{ marginLeft: deskPokerMarginLeft + 'px' }" style="position: fixed;bottom:400px;width: 100%;height: 200px">
-          <div v-show="deskPoker.length>0" v-for="item in deskPoker" style="height:100%;width:100px;border: solid 1px;border-radius: 8px;float: left;margin-left:-50px;background-color: azure">
+          <div v-show="deskPoker.length>0" v-for="item in deskPoker" class="pokerDesk">
               {{item.text}}
           </div>
           <div v-show="deskPoker.length===0" style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;">
@@ -145,7 +130,7 @@ export default {
           return [
               game.playerList[i].name+' : '+game.playerList[i].type+' : '+game.playerList[i].pokerList.length,
               game.playerList[i].pokerListToString(),
-              'last : '+game.playerList[i].lastSendObjToString()
+              game.playerList[i].lastSendObjToString()
           ];
         },
       player1Str: function () {
@@ -154,7 +139,7 @@ export default {
           return [
               game.playerList[i].name+' : '+game.playerList[i].type+' : '+game.playerList[i].pokerList.length,
               game.playerList[i].pokerListToString(),
-              'last : '+game.playerList[i].lastSendObjToString()
+              game.playerList[i].lastSendObjToString()
           ];
       },
       player0Str: function () {
@@ -163,7 +148,7 @@ export default {
           return [
               game.playerList[i].name+' : '+game.playerList[i].type+' : '+game.playerList[i].pokerList.length,
               game.playerList[i].pokerListToString(),
-              'last : '+game.playerList[i].lastSendObjToString()
+              game.playerList[i].lastSendObjToString()
           ];
       },
       deskStr: function () {
@@ -228,8 +213,13 @@ export default {
 </script>
 
 <style scoped>
+    .pokerDesk{
+        height:100%;width:100px;border: solid 1px;border-radius: 16px;float: left;margin-left:-50px;background-color: azure;
+        font-size: 30px;
+    }
     .poker{
-        height:100%;width:100px;border: solid 1px;border-radius: 8px;float: left;margin-left:-50px;background-color: azure;
+        height:100%;width:100px;border: solid 1px;border-radius: 16px;float: left;margin-left:-50px;background-color: azure;
+        font-size: 30px;
     }
     .poker:hover{
         background-color: antiquewhite;
