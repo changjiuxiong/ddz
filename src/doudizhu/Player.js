@@ -799,6 +799,15 @@ class Player{
                         }
 
                     }else{
+
+                        if(obj.type === 'sx'){
+                            this.sendPoker(obj);
+                            return true;
+                        }else if(obj.type === 'four' && lastObj.type!=='sx'){
+                            this.sendPoker(obj);
+                            return true;
+                        }
+
                         this.listBackToPokerList(list);
                         alert('type is not '+lastObj.type+'!');
                         return false;
