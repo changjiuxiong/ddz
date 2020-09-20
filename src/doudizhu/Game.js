@@ -9,7 +9,9 @@ class Game{
         this.oldPokerList = [];
         this.currentPlayer = [];
         this.dizhu = null;
-        this.second = 20;
+        this.MaxSecond = 999999;
+        this.second = this.MaxSecond;
+        this.isOver = true;
 
         this.init();
     }
@@ -23,10 +25,13 @@ class Game{
     }
 
     resetTime(){
-        this.second = 20;
+        this.second = this.MaxSecond;
     }
 
     timeLoop(){
+        if(this.isOver){
+            return;
+        }
         this.second--;
 
         if(this.second === 0){
@@ -44,6 +49,7 @@ class Game{
     }
 
     start(){
+        this.isOver = false;
         this.timeLoop();
         this.currentPlayer = this.dizhu;
         if(this.currentPlayer.isRobot){
@@ -66,6 +72,7 @@ class Game{
 
     gameOver(){
         alert('gameOver! '+this.currentPlayer.name+' ['+this.currentPlayer.type+'] win!');
+        this.isOver = true;
     }
 
     checkGameOver(){

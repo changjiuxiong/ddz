@@ -131,6 +131,16 @@ class Poker{
                 };
             }
 
+        }else if(pokerList.length === 3){
+
+            if(Count3List.length === 1){
+                return {
+                    type:'three',
+                    poker: pokerList,
+                    three: pokerList,
+                };
+            }
+
         }else if(pokerList.length === 4){
 
             if(Count3List.length === 1){
@@ -157,54 +167,58 @@ class Poker{
                     three: Count3List[0],
                     two: Count2List[0],
                 };
-            }
-
-        }else if(pokerList.length === 8){
-
-            if(Count3List.length === 2 && Count3List[0][0].number+1===Count3List[1][0].number){
-                if(Count2List.length === 1){
-                    Count1List.push(Count2List[0].splice(0,1));
-                    Count1List.push(Count2List[0].splice(0,1));
-                }
+            }else if(Count4List.length === 1 && Count1List.length === 1){
                 return {
-                    type:'threeWithOneList',
+                    type:'fourWithOne',
                     poker: pokerList,
-                    list: [
-                        {
-                            three: Count3List[0],
-                            one: Count1List[0],
-                        },
-                        {
-                            three: Count3List[1],
-                            one: Count1List[1],
-                        }
-                    ],
+                    four: Count4List[0],
+                    one: Count1List[0],
                 };
             }
 
-        }else if(pokerList.length === 10){
+        }else if(pokerList.length === 6){
 
-            if(Count3List.length === 2 && Count3List[0][0].number+1===Count3List[1][0].number && Count2List.length === 2){
+            if(Count4List.length === 1 && Count2List.length === 1){
                 return {
-                    type:'threeWithTwoList',
+                    type:'fourWithTwo',
                     poker: pokerList,
-                    list: [
-                        {
-                            three: Count3List[0],
-                            two: Count2List[0],
-                        },
-                        {
-                            three: Count3List[1],
-                            two: Count2List[1],
-                        }
-                    ],
+                    four: Count4List[0],
+                    two: Count2List[0],
                 };
             }
 
         }
 
+        if(Count3List.length>=2 && Count3List[Count3List.length-1][0].number<=14 && Count3List[0][0].number+Count3List.length-1===Count3List[Count3List.length-1][0].number){
+            //threeWithOneList
+            if(pokerList.length-3*Count3List.length===Count3List.length){
+                return {
+                    type:'threeWithOneList',
+                    poker: pokerList,
+                    list: Count3List.map(function (item) {
+                        return {
+                            three: item,
+                        };
+                    }),
+                };
+            }else{
+                //threeWithTwoList
+                if(Count2List.length===Count3List.length){
+                    return {
+                        type:'threeWithTwoList',
+                        poker: pokerList,
+                        list: Count3List.map(function (item) {
+                            return {
+                                three: item,
+                            };
+                        }),
+                    };
+                }
+            }
+        }
+
         //判断oneList
-        if(pokerList.length >= 5 && Count1List.length === pokerList.length && pokerList[0].number+pokerList.length-1===pokerList[pokerList.length-1].number){
+        if(pokerList.length >= 5 && pokerList[pokerList.length-1].number<=14 && Count1List.length === pokerList.length && pokerList[0].number+pokerList.length-1===pokerList[pokerList.length-1].number){
             return {
                 type:'oneList',
                 poker: pokerList,
@@ -217,13 +231,26 @@ class Poker{
         }
 
         //判断twoList
-        if(pokerList.length >= 6 && pokerList.length%2 === 0 && Count2List.length === pokerList.length/2 && pokerList[0].number+pokerList.length/2-1===pokerList[pokerList.length-1].number){
+        if(pokerList.length >= 6 && pokerList[pokerList.length-1].number<=14 && pokerList.length%2 === 0 && Count2List.length === pokerList.length/2 && pokerList[0].number+pokerList.length/2-1===pokerList[pokerList.length-1].number){
             return {
                 type:'twoList',
                 poker: pokerList,
                 list: Count2List.map(function (item) {
                     return {
                         two: item,
+                    }
+                }),
+            }
+        }
+
+        //判断threeList
+        if(pokerList.length >= 6 && pokerList[pokerList.length-1].number<=14 && pokerList.length%3 === 0 && Count3List.length === pokerList.length/3 && pokerList[0].number+pokerList.length/3-1===pokerList[pokerList.length-1].number){
+            return {
+                type:'threeList',
+                poker: pokerList,
+                list: Count3List.map(function (item) {
+                    return {
+                        three: item,
                     }
                 }),
             }

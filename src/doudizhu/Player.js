@@ -59,8 +59,8 @@ class Player{
     }
 
     playByAllType(){
-        let types2 = ['one','two','threeWithOne','threeWithTwo','threeWithOneList','threeWithTwoList','oneList','twoList','four','sx','pass'];
-        let types = ['threeWithTwoList','threeWithOneList','twoList','threeWithTwo','oneList','threeWithOne','two','one','four','sx','pass'];
+        let types2 = ['one','two','three','threeWithOne','threeWithTwo','fourWithOne','fourWithTwo','threeWithOneList','threeWithTwoList','oneList','twoList','threeList','four','sx','pass'];
+        let types = ['threeWithTwoList','threeWithOneList','threeList','twoList','fourWithTwo','fourWithOne','threeWithTwo','oneList','threeWithOne','three','two','one','four','sx','pass'];
         for(let i=0; i<types.length; i++){
             let obj = this.getSmallestObjByType(types[i]);
             if(obj){
@@ -166,6 +166,14 @@ class Player{
                     one: poker,
                 };
             }
+        }else if(type === 'three'){
+            if(Count3List.length>0){
+                obj = {
+                    type: type,
+                    poker: Count3List[0],
+                    three: Count3List[0],
+                };
+            }
         }else if(type === 'threeWithOne'){
             if(Count3List.length>0){
                 let one;
@@ -222,55 +230,90 @@ class Player{
                     };
                 }
             }
-        }else if(type === 'threeWithOneList'){
-            if(Count3List.length>1){
-                for(let i=0; i<Count3List.length-1; i++){
-                    if(Count3List[i][0].number+1===Count3List[i+1][0].number+1){
+        }else if(type === 'fourWithOne'){
+            if(Count4List.length>0){
+                let one;
+                if(Count1List.length>0){
+                    one = Count1List[0];
+                }else if(Count2List.length>0){
+                    one = Count2List[0].slice(0,1);
+                }else if(Count3List.length>0){
+                    one = Count3List[0].slice(0,1);
+                }
 
-                        let one1,one2;
-                        if(Count1List.length>0){
-                            one1 = Count1List[0];
-                            if(Count1List.length>1){
-                                one2 = Count1List[1];
-                            }else{
-                                if(Count2List.length>0){
-                                    one2 = Count2List[0].slice(0,1);
-                                }else if(Count3List.length>0){
-                                    for(let j=0; j<Count3List.length; j++){
-                                        if(j===i){
-                                            continue;
-                                        }
-                                        one2 = Count3List[j].slice(0,1);
-                                    }
-                                }
-                            }
-                        }else if(Count2List.length>0){
-                            one1 = Count2List[0].slice(0,1);
-                            one2 = Count2List[0].slice(1,2);
-                        }else if(Count3List.length>0){
-                            for(let j=0; j<Count3List.length; j++){
-                                if(j===i){
-                                    continue;
-                                }
-                                one1 = Count3List[j].slice(0,1);
-                                one2 = Count3List[j].slice(1,2);
+                if(one){
+                    obj = {
+                        type: type,
+                        poker: Count4List[0].concat(one),
+                        four: Count4List[0],
+                        one: one,
+                    };
+                }
+            }
+        }else if(type === 'fourWithTwo'){
+            if(Count4List.length>0){
+                let two;
+                if(Count2List.length>0){
+                    two = Count2List[0];
+                }else if(Count3List.length>0){
+                    two = Count3List[0].slice(0,2);
+                }
+
+                if(two){
+                    obj = {
+                        type: type,
+                        poker: Count4List[0].concat(two),
+                        four: Count4List[0],
+                        two: two,
+                    };
+                }
+            }
+        }else if(type === 'threeWithOneList'){
+            if(Count3List.length>=2){
+                for(let i=0; i<Count3List.length-2+1; i++){
+                    if(Count3List[i][0].number+2-1===Count3List[i+2-1][0].number && Count3List[i+2-1][0].number<=14){
+
+                        let oneList = [];
+
+                        for(let j=0; j<Count1List.length&&oneList.length<2; j++){
+                            oneList.push(Count1List[j]);
+                        }
+
+                        for(let j=0; j<Count2List.length&&oneList.length<2; j++){
+                            oneList.push(Count2List[j].slice(0,1));
+                            if(oneList.length<2){
+                                oneList.push(Count2List[j].slice(1,2));
                             }
                         }
 
-                        if(one1&&one2){
+                        for(let j=0; j<Count3List.length&&oneList.length<2; j++){
+                            oneList.push(Count3List[j].slice(0,1));
+                            if(oneList.length<2){
+                                oneList.push(Count3List[j].slice(1,2));
+                            }
+                            if(oneList.length<2){
+                                oneList.push(Count3List[j].slice(2,3));
+                            }
+                        }
+
+                        if(oneList.length === 2){
+
+                            let poker = [];
+                            let list = [];
+                            for(let j=0; j<2; j++){
+                                poker.concat(Count3List[i+j]);
+                                poker.concat(oneList[i]);
+                                let threeOne = {
+                                    three: Count3List[i+j],
+                                    one: oneList[i],
+                                };
+                                list.push(threeOne);
+                            }
+
                             obj = {
                                 type: type,
-                                poker: Count3List[i].concat(one1).concat(Count3List[i+1]).concat(one2),
-                                list: [
-                                    {
-                                        three: Count3List[i],
-                                        one: one1,
-                                    },
-                                    {
-                                        three: Count3List[i+1],
-                                        one: one2,
-                                    }
-                                ],
+                                poker: poker,
+                                list: list,
                             };
                         }
                         break;
@@ -279,39 +322,38 @@ class Player{
                 }
             }
         }else if(type === 'threeWithTwoList'){
-            if(Count3List.length>1){
-                for(let i=0; i<Count3List.length-1; i++){
-                    if(Count3List[i][0].number+1===Count3List[i+1][0].number+1){
+            if(Count3List.length>=2){
+                for(let i=0; i<Count3List.length-2+1; i++){
+                    if(Count3List[i][0].number+2-1===Count3List[i+2-1][0].number && Count3List[i+2-1][0].number<=14){
 
-                        let two1,two2;
-                        if(Count2List.length>0){
-                            two1 = Count2List[0];
-                            if(Count2List.length>1){
-                                two2 = Count2List[1];
-                            }else{
-                                for(let j=0; j<Count3List.length; j++){
-                                    if(j===i){
-                                        continue;
-                                    }
-                                    two2 = Count3List[j].slice(0,2);
-                                }
-                            }
+                        let twoList = [];
+
+                        for(let j=0; j<Count2List.length&&twoList.length<2; j++){
+                            twoList.push(Count2List);
                         }
 
-                        if(two1&&two2){
+                        for(let j=0; j<Count3List.length&&twoList.length<2; j++){
+                            twoList.push(Count3List[j].slice(0,2));
+                        }
+
+                        if(twoList.length === 2){
+
+                            let poker = [];
+                            let list = [];
+                            for(let j=0; j<2; j++){
+                                poker.concat(Count3List[i+j]);
+                                poker.concat(twoList[i]);
+                                let threeOne = {
+                                    three: Count3List[i+j],
+                                    two: twoList[i],
+                                };
+                                list.push(threeOne);
+                            }
+
                             obj = {
                                 type: type,
-                                poker: Count3List[i].concat(two1).concat(Count3List[i+1]).concat(two2),
-                                list: [
-                                    {
-                                        three: Count3List[i],
-                                        two: two1,
-                                    },
-                                    {
-                                        three: Count3List[i+1],
-                                        two: two2,
-                                    }
-                                ],
+                                poker: poker,
+                                list: list,
                             };
                         }
                         break;
@@ -320,9 +362,9 @@ class Player{
                 }
             }
         }else if(type === 'oneList'){
-            if(Count1List.length>=5 ){
+            if(Count1List.length>=5){
                 for(let i=0; i<Count1List.length-5+1; i++){
-                    if(Count1List[i][0].number+5-1===Count1List[i+5-1][0].number){
+                    if(Count1List[i][0].number+5-1===Count1List[i+5-1][0].number && Count1List[i+5-1][0].number<=14){
                         let list = Count1List.slice(i,i+5);
                         obj = {
                             type: type,
@@ -340,7 +382,7 @@ class Player{
         }else if(type === 'twoList'){
             if(Count2List.length>=3 ){
                 for(let i=0; i<Count2List.length-3+1; i++){
-                    if(Count2List[i][0].number+3-1===Count2List[i+3-1][0].number){
+                    if(Count2List[i][0].number+3-1===Count2List[i+3-1][0].number && Count2List[i+3-1][0].number<=14){
                         let list = Count2List.slice(i,i+3);
                         obj = {
                             type: type,
@@ -348,6 +390,24 @@ class Player{
                             list: list.map(function (item) {
                                 return {
                                     two: item,
+                                }
+                            }),
+                        };
+                        break;
+                    }
+                }
+            }
+        }else if(type === 'threeList'){
+            if(Count3List.length>=2 ){
+                for(let i=0; i<Count3List.length-2+1; i++){
+                    if(Count3List[i][0].number+2-1===Count3List[i+2-1][0].number && Count3List[i+2-1][0].number<=14){
+                        let list = Count3List.slice(i,i+2);
+                        obj = {
+                            type: type,
+                            poker: list.flat(1),
+                            list: list.map(function (item) {
+                                return {
+                                    three: item,
                                 }
                             }),
                         };
@@ -477,6 +537,19 @@ class Player{
                     }
                 }
             }
+        }else if(type === 'three'){
+            if(Count3List.length>0){
+                for(let i=0; i<Count3List.length; i++){
+                    if(Count3List[i][0].number>lastObj.three[0].number){
+                        obj = {
+                            type: type,
+                            poker: Count3List[i],
+                            three: Count3List[i],
+                        };
+                        break;
+                    }
+                }
+            }
         }else if(type === 'threeWithOne'){
             if(Count3List.length>0){
                 for(let i=0; i<Count3List.length; i++){
@@ -538,55 +611,103 @@ class Player{
                     }
                 }
             }
-        }else if(type === 'threeWithOneList'){
-            if(Count3List.length>1){
-                for(let i=0; i<Count3List.length-1; i++){
-                    if(Count3List[i][0].number>lastObj.list[0].three[0].number && Count3List[i][0].number+1===Count3List[i+1][0].number+1){
+        }else if(type === 'fourWithOne'){
+            if(Count4List.length>0){
+                for(let i=0; i<Count4List.length; i++){
+                    if(Count4List[i][0].number>lastObj.four[0].number){
 
-                        let one1,one2;
+                        let one;
                         if(Count1List.length>0){
-                            one1 = Count1List[0];
-                            if(Count1List.length>1){
-                                one2 = Count1List[1];
-                            }else{
-                                if(Count2List.length>0){
-                                    one2 = Count2List[0].slice(0,1);
-                                }else if(Count3List.length>0){
-                                    for(let j=0; j<Count3List.length; j++){
-                                        if(j===i){
-                                            continue;
-                                        }
-                                        one2 = Count3List[j].slice(0,1);
-                                    }
-                                }
-                            }
+                            one = Count1List[0];
                         }else if(Count2List.length>0){
-                            one1 = Count2List[0].slice(0,1);
-                            one2 = Count2List[0].slice(1,2);
+                            one = Count2List[0].slice(0,1);
                         }else if(Count3List.length>0){
-                            for(let j=0; j<Count3List.length; j++){
-                                if(j===i){
-                                    continue;
-                                }
-                                one1 = Count3List[j].slice(0,1);
-                                one2 = Count3List[j].slice(1,2);
+                            one = Count3List[0].slice(0,1);
+                        }
+
+                        if(one){
+                            obj = {
+                                type: type,
+                                poker: Count4List[i].concat(one),
+                                four: Count4List[i],
+                                one: one,
+                            };
+                        }
+                        break;
+
+                    }
+                }
+            }
+        }else if(type === 'fourWithTwo'){
+            if(Count4List.length>0){
+                for(let i=0; i<Count4List.length; i++){
+                    if(Count4List[i][0].number>lastObj.four[0].number){
+
+                        let two;
+                        if(Count2List.length>0){
+                            two = Count2List[0];
+                        }else if(Count3List.length>0){
+                            two = Count3List[0].slice(0,2);
+                        }
+
+                        if(two){
+                            obj = {
+                                type: type,
+                                poker: Count4List[i].concat(two),
+                                four: Count4List[i],
+                                two: two,
+                            };
+                        }
+                        break;
+                    }
+                }
+            }
+        }else if(type === 'threeWithOneList'){
+            if(Count3List.length>=lastObj.list.length){
+                for(let i=0; i<Count3List.length-lastObj.list.length+1; i++){
+                    if(Count3List[i][0].number>lastObj.list[0].three[0].number && Count3List[i][0].number+lastObj.list.length-1===Count3List[i+lastObj.list.length-1][0].number && Count3List[i+lastObj.list.length-1][0].number<=14){
+
+                        let oneList = [];
+
+                        for(let j=0; j<Count1List.length&&oneList.length<lastObj.list.length; j++){
+                            oneList.push(Count1List[j]);
+                        }
+
+                        for(let j=0; j<Count2List.length&&oneList.length<lastObj.list.length; j++){
+                            oneList.push(Count2List[j].slice(0,1));
+                            if(oneList.length<lastObj.list.length){
+                                oneList.push(Count2List[j].slice(1,2));
                             }
                         }
 
-                        if(one1&&one2){
+                        for(let j=0; j<Count3List.length&&oneList.length<lastObj.list.length; j++){
+                            oneList.push(Count3List[j].slice(0,1));
+                            if(oneList.length<lastObj.list.length){
+                                oneList.push(Count3List[j].slice(1,2));
+                            }
+                            if(oneList.length<lastObj.list.length){
+                                oneList.push(Count3List[j].slice(2,3));
+                            }
+                        }
+
+                        if(oneList.length === lastObj.list.length){
+
+                            let poker = [];
+                            let list = [];
+                            for(let j=0; j<lastObj.list.length; j++){
+                                poker.concat(Count3List[i+j]);
+                                poker.concat(oneList[i]);
+                                let threeOne = {
+                                    three: Count3List[i+j],
+                                    one: oneList[i],
+                                };
+                                list.push(threeOne);
+                            }
+
                             obj = {
                                 type: type,
-                                poker: Count3List[i].concat(one1).concat(Count3List[i+1]).concat(one2),
-                                list: [
-                                    {
-                                        three: Count3List[i],
-                                        one: one1,
-                                    },
-                                    {
-                                        three: Count3List[i+1],
-                                        one: one2,
-                                    }
-                                ],
+                                poker: poker,
+                                list: list,
                             };
                         }
                         break;
@@ -595,49 +716,49 @@ class Player{
                 }
             }
         }else if(type === 'threeWithTwoList'){
-            if(Count3List.length>1){
-                for(let i=0; i<Count3List.length-1; i++){
-                    if(Count3List[i][0].number>lastObj.list[0].three[0].number && Count3List[i][0].number+1===Count3List[i+1][0].number+1){
+            if(Count3List.length>=lastObj.list.length){
+                for(let i=0; i<Count3List.length-lastObj.list.length+1; i++){
+                    if(Count3List[i][0].number>lastObj.list[0].three[0].number && Count3List[i][0].number+lastObj.list.length-1===Count3List[i+lastObj.list.length-1][0].number && Count3List[i+lastObj.list.length-1][0].number<=14){
 
-                        let two1,two2;
-                        if(Count2List.length>0){
-                            two1 = Count2List[0];
-                            if(Count2List.length>1){
-                                two2 = Count2List[1];
-                            }else{
-                                for(let j=0; j<Count3List.length; j++){
-                                    if(j===i){
-                                        continue;
-                                    }
-                                    two2 = Count3List[j].slice(0,2);
-                                }
-                            }
+                        let twoList = [];
+
+                        for(let j=0; j<Count2List.length&&twoList.length<lastObj.list.length; j++){
+                            twoList.push(Count2List);
                         }
 
-                        if(two1&&two2){
+                        for(let j=0; j<Count3List.length&&twoList.length<lastObj.list.length; j++){
+                            twoList.push(Count3List[j].slice(0,2));
+                        }
+
+                        if(twoList.length === lastObj.list.length){
+
+                            let poker = [];
+                            let list = [];
+                            for(let j=0; j<lastObj.list.length; j++){
+                                poker.concat(Count3List[i+j]);
+                                poker.concat(twoList[i]);
+                                let threeOne = {
+                                    three: Count3List[i+j],
+                                    two: twoList[i],
+                                };
+                                list.push(threeOne);
+                            }
+
                             obj = {
                                 type: type,
-                                poker: Count3List[i].concat(two1).concat(Count3List[i+1]).concat(two2),
-                                list: [
-                                    {
-                                        three: Count3List[i],
-                                        two: two1,
-                                    },
-                                    {
-                                        three: Count3List[i+1],
-                                        two: two2,
-                                    }
-                                ],
+                                poker: poker,
+                                list: list,
                             };
                         }
                         break;
+
                     }
                 }
             }
         }else if(type === 'oneList'){
             if(Count1List.length>=lastObj.list.length ){
                 for(let i=0; i<Count1List.length-lastObj.list.length+1; i++){
-                    if(Count1List[i][0].number>lastObj.list[0].one[0].number && Count1List[i][0].number+lastObj.list.length-1===Count1List[i+lastObj.list.length-1][0].number){
+                    if(Count1List[i][0].number>lastObj.list[0].one[0].number && Count1List[i][0].number+lastObj.list.length-1===Count1List[i+lastObj.list.length-1][0].number && Count1List[i+lastObj.list.length-1][0].number<=14){
                         let list = Count1List.slice(i,i+lastObj.list.length);
                         obj = {
                             type: type,
@@ -655,7 +776,7 @@ class Player{
         }else if(type === 'twoList'){
             if(Count2List.length>=lastObj.list.length ){
                 for(let i=0; i<Count2List.length-lastObj.list.length+1; i++){
-                    if(Count2List[i][0].number>lastObj.list[0].two[0].number && Count2List[i][0].number+lastObj.list.length-1===Count2List[i+lastObj.list.length-1][0].number){
+                    if(Count2List[i][0].number>lastObj.list[0].two[0].number && Count2List[i][0].number+lastObj.list.length-1===Count2List[i+lastObj.list.length-1][0].number && Count2List[i+lastObj.list.length-1][0].number<=14){
                         let list = Count2List.slice(i,i+lastObj.list.length);
                         obj = {
                             type: type,
@@ -663,6 +784,24 @@ class Player{
                             list: list.map(function (item) {
                                 return {
                                     two: item,
+                                }
+                            }),
+                        };
+                        break;
+                    }
+                }
+            }
+        }else if(type === 'threeList'){
+            if(Count3List.length>=lastObj.list.length ){
+                for(let i=0; i<Count3List.length-lastObj.list.length+1; i++){
+                    if(Count3List[i][0].number>lastObj.list[0].two[0].number && Count3List[i][0].number+lastObj.list.length-1===Count3List[i+lastObj.list.length-1][0].number && Count3List[i+lastObj.list.length-1][0].number<=14){
+                        let list = Count3List.slice(i,i+lastObj.list.length);
+                        obj = {
+                            type: type,
+                            poker: list.flat(1),
+                            list: list.map(function (item) {
+                                return {
+                                    three: item,
                                 }
                             }),
                         };
@@ -850,14 +989,26 @@ class Player{
     }
 
     compareTwoObj(obj1, obj2) {
+        if(obj1.list && obj2.list){
+            if(obj1.list.length!==obj2.list.length){
+                return false;
+            }
+        }
+
         if (obj1.type === 'one') {
             return obj1.one[0].number > obj2.one[0].number;
         } else if (obj1.type === 'two') {
             return obj1.two[0].number > obj2.two[0].number;
+        } else if (obj1.type === 'three') {
+            return obj1.three[0].number > obj2.three[0].number;
         } else if (obj1.type === 'threeWithOne') {
             return obj1.three[0].number > obj2.three[0].number;
         } else if (obj1.type === 'threeWithTwo') {
             return obj1.three[0].number > obj2.three[0].number;
+        } else if (obj1.type === 'fourWithOne') {
+            return obj1.four[0].number > obj2.four[0].number;
+        } else if (obj1.type === 'fourWithTwo') {
+            return obj1.four[0].number > obj2.four[0].number;
         } else if (obj1.type === 'threeWithOneList') {
             return obj1.list[0].three[0].number > obj2.list[0].three[0].number;
         } else if (obj1.type === 'threeWithTwoList') {
@@ -866,6 +1017,8 @@ class Player{
             return obj1.list[0].one[0].number > obj2.list[0].one[0].number;
         } else if (obj1.type === 'twoList') {
             return obj1.list[0].two[0].number > obj2.list[0].two[0].number;
+        } else if (obj1.type === 'threeList') {
+            return obj1.list[0].three[0].number > obj2.list[0].three[0].number;
         } else if (obj1.type === 'four') {
             return obj1.four[0].number > obj2.four[0].number;
         }
