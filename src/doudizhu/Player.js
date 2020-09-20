@@ -828,7 +828,7 @@ class Player{
 
             if(Count4List.length>0){
                 obj = {
-                    type: type,
+                    type: 'four',
                     poker: Count4List[0],
                     four: Count4List[0],
                 };
@@ -842,7 +842,7 @@ class Player{
                 if(Count1List[Count1List.length-2] === 16){
                     let poker = Count1List[Count1List.length-2].concat(Count1List[Count1List.length-1]);
                     obj = {
-                        type: type,
+                        type: 'sx',
                         poker: poker,
                         sx: poker,
                     };
