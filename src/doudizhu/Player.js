@@ -136,20 +136,6 @@ class Player{
                     poker: Count1List[0],
                     one: Count1List[0],
                 };
-            }else if(Count2List.length>0){
-                let poker = Count2List[0].slice(0,1);
-                obj = {
-                    type: type,
-                    poker: poker,
-                    one: poker,
-                };
-            }else if(Count3List.length>0){
-                let poker = Count3List[0].slice(0,1);
-                obj = {
-                    type: type,
-                    poker: poker,
-                    one: poker,
-                };
             }
         }else if(type === 'two'){
             if(Count2List.length>0){
@@ -157,13 +143,6 @@ class Player{
                     type: type,
                     poker: Count2List[0],
                     two: Count2List[0],
-                };
-            }else if(Count3List.length>0){
-                let poker = Count3List[0].slice(0,2);
-                obj = {
-                    type: type,
-                    poker: poker,
-                    one: poker,
                 };
             }
         }else if(type === 'three'){
@@ -179,15 +158,6 @@ class Player{
                 let one;
                 if(Count1List.length>0){
                     one = Count1List[0];
-                }else if(Count2List.length>0){
-                    one = Count2List[0].slice(0,1);
-                }else if(Count3List.length>0){
-                    for(let j=0; j<Count3List.length; j++){
-                        if(j===0){
-                            continue;
-                        }
-                        one = Count3List[j].slice(0,1);
-                    }
                 }
 
                 if(one){
@@ -212,13 +182,6 @@ class Player{
                 let two;
                 if(Count2List.length>0){
                     two = Count2List[0];
-                }else if(Count3List.length>0){
-                    for(let j=0; j<Count3List.length; j++){
-                        if(j===0){
-                            continue;
-                        }
-                        two = Count3List[j].slice(0,2);
-                    }
                 }
 
                 if(two){
@@ -235,10 +198,6 @@ class Player{
                 let one;
                 if(Count1List.length>0){
                     one = Count1List[0];
-                }else if(Count2List.length>0){
-                    one = Count2List[0].slice(0,1);
-                }else if(Count3List.length>0){
-                    one = Count3List[0].slice(0,1);
                 }
 
                 if(one){
@@ -255,8 +214,6 @@ class Player{
                 let two;
                 if(Count2List.length>0){
                     two = Count2List[0];
-                }else if(Count3List.length>0){
-                    two = Count3List[0].slice(0,2);
                 }
 
                 if(two){
@@ -332,8 +289,11 @@ class Player{
                             twoList.push(Count2List);
                         }
 
-                        for(let j=0; j<Count3List.length&&twoList.length<2; j++){
-                            twoList.push(Count3List[j].slice(0,2));
+                        //还差一对
+                        if(twoList.length===2-1){
+                            for(let j=0; j<Count3List.length&&twoList.length<2; j++){
+                                twoList.push(Count3List[j].slice(0,2));
+                            }
                         }
 
                         if(twoList.length === 2){
