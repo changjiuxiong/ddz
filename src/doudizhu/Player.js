@@ -1,4 +1,5 @@
 import Poker from "./Poker";
+import AI from "./AI";
 
 class Player{
     constructor(param) {
@@ -10,8 +11,15 @@ class Player{
         this.next = null;
         this.isRobot = param.isRobot;
         this.game = param.game;
-        
+        this.ai = new AI();
+        this.classifyObj = new AI();
+
         this.lastSendObj = null;
+    }
+
+    getClassifyObj(){
+        this.classifyObj = this.ai.getClassifyObj(this.pokerList);
+        console.log(this.classifyObj);
     }
 
     addPoker(poker){

@@ -49,6 +49,9 @@ class Game{
     }
 
     start(){
+
+        // this.playerList[0].getClassifyObj();
+
         this.isOver = false;
         this.timeLoop();
         this.currentPlayer = this.dizhu;
