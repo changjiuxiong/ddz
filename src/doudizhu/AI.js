@@ -76,7 +76,6 @@ class AI{
         let Count3List = obj[3];
         let Count4List = obj[4];
 
-        let sx = [];
         let four = Count4List;
         let three = [];
         let threeList = [];
@@ -84,11 +83,6 @@ class AI{
         let twoList = [];
         let one = [];
         let oneList = [];
-        if(Count1List.length>1){
-            if(Count1List[Count1List.length-2][0].number===16){
-                sx = Count1List.slice(Count1List.length-2, Count1List.length);
-            }
-        }
 
         if(Count3List.length>0){
             let curList = [Count3List[0]];
@@ -173,10 +167,11 @@ class AI{
                 let ones = [];
                 let twos = [];
 
-                if(one.length===0){
+                if(one.length===0 || oneIndex>one.length-1){
                     break;
                 }
-                if(two.length===0){
+
+                if(two.length===0 || twoIndex>two.length-1){
                     startN = one[oneIndex][0].number;
                     ones.push(one[oneIndex]);
                     oneIndex++;
@@ -231,12 +226,12 @@ class AI{
                                 //delete from two
                                 for(let j1=0; j1<two.length; j1++){
                                     if(two[j1]===pokers){
-                                        one.splice(j1,1);
+                                        two.splice(j1,1);
                                         break;
                                     }
                                 }
 
-                                let poker = pokers.splice(0);
+                                let poker = pokers.splice(0,1);
                                 cmbList.push(poker);
                                 one.push(pokers);
 
@@ -261,7 +256,6 @@ class AI{
         }
 
         return {
-            sx,
             four,
             three,
             threeList,

@@ -19,6 +19,7 @@ class Player{
 
     getClassifyObj(){
         this.classifyObj = this.ai.getClassifyObj(this.pokerList);
+        console.log(this.pokerListToString());
         console.log(this.classifyObj);
     }
 
