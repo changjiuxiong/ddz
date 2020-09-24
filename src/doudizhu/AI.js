@@ -272,6 +272,16 @@ class AI{
             }
         }
 
+        //combine oneList oneList together
+        oneList.sort(this.sortList);
+        for(let i12=1; i12<oneList.length; i12++){
+            if(oneList[i12][0][0].number===oneList[i12-1][oneList[i12-1].length-1][0].number+1){
+                oneList[i12-1] = oneList[i12-1].concat(oneList[i12]);
+                oneList.splice(i12,1);
+                i12--;
+            }
+        }
+
         return {
             four,
             three,
@@ -292,6 +302,10 @@ class AI{
 
     sortArray(a, b){
         return a[0].number - b[0].number;
+    }
+
+    sortList(a, b){
+        return a[0][0].number - b[0][0].number;
     }
 
 }
