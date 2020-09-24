@@ -154,8 +154,6 @@ class AI{
             let oneIndex = 0;
             let twoIndex = 0;
 
-            let findlist = false;
-
             while(true){
 
                 if(oneIndex>one.length-1&&twoIndex>two.length-1){
@@ -241,7 +239,6 @@ class AI{
                             oneList.push(cmbList);
                             one.sort(this.sortArray);
 
-                            findlist = true;
                             oneIndex = 0;
                             twoIndex = 0;
                             break;
@@ -253,6 +250,26 @@ class AI{
 
             }
 
+        }
+
+        //combine one oneList together
+        for(let i10=0; i10<one.length; i10++){
+            let find1 = false;
+            for(let i11=0; i11<oneList.length; i11++){
+                if(one[i10][0].number===oneList[i11][0][0].number-1){
+                    oneList[i11].unshift(one[i10]);
+                    find1 = true;
+                    break;
+                }else if(one[i10][0].number===oneList[i11][oneList[i11].length-1][0].number+1){
+                    oneList[i11].push(one[i10]);
+                    find1 = true;
+                    break;
+                }
+            }
+            if(find1){
+                one.splice(i10,1);
+                i10--;
+            }
         }
 
         return {
