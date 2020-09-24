@@ -11,15 +11,18 @@ class Player{
         this.next = null;
         this.isRobot = param.isRobot;
         this.game = param.game;
-        this.ai = new AI();
-        this.classifyObj = new AI();
+        this.ai = new AI({
+            player: this,
+            game: param.game,
+        });
+        this.classifyObj = null;
 
         this.lastSendObj = null;
     }
 
+    //组牌
     getClassifyObj(){
         this.classifyObj = this.ai.getClassifyObj(this.pokerList);
-        console.log(this.pokerListToString());
         console.log(this.classifyObj);
     }
 
@@ -60,7 +63,25 @@ class Player{
 
     }
 
+    playByAI2(){
+
+        let that = this;
+
+        that.getClassifyObj();
+
+        setTimeout(function () {
+            let lastObj = that.getLastObj();
+            if(lastObj){
+                that.ai.playByObj(lastObj);
+            }else{
+                that.ai.playByAllType();
+            }
+        },1000);
+
+    }
+
     sendPoker(obj){
+        obj.player = this;
         this.game.clearDesk();
         this.lastSendObj = obj;
         this.game.deskPokerObj = obj;
