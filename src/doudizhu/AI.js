@@ -298,9 +298,80 @@ class AI{
         };
     }
 
+    //接牌1
+    getByObj1(lastObj){
+        let obj;
+        obj = getSmallestObjByObj(lastObj);
+    }
+
+    //接牌2
+    getByObj2(lastObj){
+
+    }
+
+    //接牌4
+    getByObj4(lastObj){
+        let obj;
+        if(lastObj.type==='one'){
+            obj = this.getByObj5(lastObj);
+        }else{
+            obj = this.getByObj2(lastObj);
+        }
+
+        return obj;
+    }
+
+    //接牌5
+    getByObj5(lastObj){
+        let classifyObj = this.player.classifyObj;
+
+        let obj;
+        let poker;
+        if(classifyObj.four.length>0){
+            poker = classifyObj.four[0];
+        }else if(classifyObj.poker15.length===4){
+            poker = classifyObj.poker15;
+        }
+        if(poker){
+            obj = {
+                type: 'four',
+                poker: poker,
+                four: poker,
+            };
+        }else{
+            if(classifyObj.poker16.length>0&&classifyObj.poker17.length>0){
+                obj = {
+                    type: 'sx',
+                    poker: classifyObj.poker16.concat(classifyObj.poker17),
+                    sx: classifyObj.poker16.concat(classifyObj.poker17),
+                }
+            }
+        }
+
+        if(!poker){
+            obj = {
+                type: 'one',
+                poker: [this.player.pokerList[this.player.pokerList.length-1]],
+                one: [this.player.pokerList[this.player.pokerList.length-1]],
+            };
+        }
+
+        return obj;
+
+    }
+
     //接牌
     playByObj(lastObj){
+        let obj;
+        if(this.player.type==='dizhu'){
+            if(this.player.next.pokerList.length===1||this.player.last.pokerList.length===1){
+                obj = this.getByObj4(lastObj);
+            }else{
+                obj = this.getByObj1(lastObj);
+            }
+        }else{
 
+        }
     }
 
     //出牌1
@@ -321,6 +392,16 @@ class AI{
         }
     }
 
+    //出牌 最小一张
+    playSmallestOne(){
+        let obj = {
+            type: 'one',
+            poker: [this.player.pokerList[0]],
+            one: [this.player.pokerList[0]],
+        };
+        this.player.deleteFromPokerListAndSendByObj(obj);
+    }
+
     //出牌
     playByAllType(){
 
@@ -330,12 +411,254 @@ class AI{
             }else{
                 this.playByTypys1();
             }
+        }else{
+            if(this.player.next.type==='nongmin'){
+                if(this.player.next.pokerList.length===1){
+                    this.playSmallestOne();
+                }else{
+                    this.playByTypys1();
+                }
+            }else{
+                if(this.player.next.pokerList.length===1){
+                    this.playByTypys2();
+                }else{
+                    this.playByTypys1();
+                }
+            }
         }
+    }
+
+    //最小接 不拆
+    getSmallestObjByObj(lastObj){
+        let classifyObj = this.player.classifyObj;
+
+        let type = lastObj.type;
+        let obj = null;
+        if(type === 'one'){
+            let poker;
+            if(classifyObj.one.length>0){
+                for(let i=0; i<classifyObj.one.length; i++){
+                    if(classifyObj.one[i][0].number>lastObj.one[0].number){
+                        poker = classifyObj.one[0];
+                        break;
+                    }
+                }
+
+            }
+
+            if(!poker){
+                if(lastObj.one[0].number<15&&classifyObj.poker15.length>0){
+                    poker = classifyObj.poker15[0];
+                }else{
+                    if(classifyObj.poker17.length<0||classifyObj.poker16.length<0){
+                        if(lastObj.one[0].number<16&&classifyObj.poker16.length>0){
+                            poker = classifyObj.poker16;
+                        }else if(lastObj.one[0].number<17&&classifyObj.poker17.length>0){
+                            poker = classifyObj.poker17;
+                        }
+                    }
+                }
+            }
+
+
+            if(poker){
+                obj = {
+                    type: type,
+                    poker: poker,
+                    one: poker,
+                };
+            }
+        }else if(type === 'two'){
+            let poker;
+
+            if(classifyObj.two.length>0){
+                poker = classifyObj.two[0];
+            }else{
+                if(classifyObj.poker15.length>1){
+                    poker = classifyObj.poker15.slice(0,2);
+                }
+            }
+            if(poker){
+                obj = {
+                    type: type,
+                    poker: poker,
+                    two: poker,
+                };
+            }
+        }else if(type === 'three'){
+            let poker;
+
+            if(classifyObj.three.length>0){
+                poker = classifyObj.three[0];
+            }else{
+                if(classifyObj.poker15.length===3){
+                    poker = classifyObj.poker15;
+                }
+            }
+
+            if(poker){
+                obj = {
+                    type: type,
+                    poker: poker,
+                    three: poker,
+                };
+            }
+        }else if(type === 'threeWithOne'){
+            let pokerThree;
+            let one;
+            if(classifyObj.three.length>0){
+                pokerThree = classifyObj.three[0];
+            }
+            if(classifyObj.one.length>0){
+                one = classifyObj.one[0];
+            }
+
+            if(!pokerThree&&classifyObj.poker15.length===3){
+                pokerThree = classifyObj.poker15;
+            }
+            if(!one&&classifyObj.poker15.length>0){
+                one = classifyObj.poker15.slice(0,1);
+            }
+
+            if(pokerThree&&one){
+                obj = {
+                    type: type,
+                    poker: pokerThree.concat(one),
+                    three: pokerThree,
+                    one: one,
+                };
+            }
+
+        }else if(type === 'four'){
+
+            let poker;
+
+            if(classifyObj.four.length>0){
+                poker = classifyObj.four[0];
+            }else{
+                if(classifyObj.poker15.length===4){
+                    poker = classifyObj.poker15;
+                }
+            }
+
+            if(poker){
+                obj = {
+                    type: type,
+                    poker: poker,
+                    four: poker,
+                };
+            }
+        }else if(type === 'threeWithTwo'){
+
+            let pokerThree;
+            let two;
+            if(classifyObj.three.length>0){
+                pokerThree = classifyObj.three[0];
+            }
+            if(classifyObj.two.length>0){
+                two = classifyObj.two[0];
+            }
+
+            if(!pokerThree&&classifyObj.poker15.length===3){
+                pokerThree = classifyObj.poker15;
+            }
+            if(!two&&classifyObj.poker15.length>1){
+                two = classifyObj.poker15.slice(0,2);
+            }
+
+            if(pokerThree&&two){
+                obj = {
+                    type: type,
+                    poker: pokerThree.concat(two),
+                    three: pokerThree,
+                    two: two,
+                };
+            }
+
+        }else if(type === 'threeWithOneList'){
+            if(classifyObj.threeList.length>0){
+                if(classifyObj.one.length>=classifyObj.threeList[0].length){
+                    let pokerThree = classifyObj.threeList[0].flat(1);
+                    let pokerOne = classifyObj.one.slice(0,classifyObj.threeList[0].length).flat(1);
+                    obj = {
+                        type: type,
+                        poker: pokerThree.concat(pokerOne),
+                        list: classifyObj.threeList[0].map(function (item) {
+                            return {
+                                three: item
+                            };
+                        }),
+                    };
+                }
+            }
+
+        }else if(type === 'threeWithTwoList'){
+            if(classifyObj.threeList.length>0){
+                if(classifyObj.two.length>=classifyObj.threeList[0].length){
+                    let pokerThree = classifyObj.threeList[0].flat(1);
+                    let pokerTwo = classifyObj.two.slice(0,classifyObj.threeList[0].length).flat(1);
+                    obj = {
+                        type: type,
+                        poker: pokerThree.concat(pokerTwo),
+                        list: classifyObj.threeList[0].map(function (item) {
+                            return {
+                                three: item
+                            };
+                        }),
+                    };
+                }
+            }
+        }else if(type === 'oneList'){
+            if(classifyObj.oneList.length>0){
+                obj = {
+                    type: type,
+                    poker: classifyObj.oneList[0].flat(1),
+                    list: classifyObj.oneList[0].map(function (item) {
+                        return {
+                            one: item,
+                        }
+                    }),
+                };
+            }
+        }else if(type === 'twoList'){
+            if(classifyObj.twoList.length>0){
+                obj = {
+                    type: type,
+                    poker: classifyObj.twoList[0].flat(1),
+                    list: classifyObj.twoList[0].map(function (item) {
+                        return {
+                            two: item,
+                        }
+                    }),
+                };
+            }
+        }else if(type === 'threeList'){
+            if(classifyObj.threeList.length>0){
+                obj = {
+                    type: type,
+                    poker: classifyObj.threeList[0].flat(1),
+                    list: classifyObj.threeList[0].map(function (item) {
+                        return {
+                            three: item,
+                        }
+                    }),
+                };
+            }
+        }else if(type === 'sx'){
+            if(classifyObj.poker16.length>0&&classifyObj.poker17.length>0){
+                return {
+                    type: type,
+                    poker: classifyObj.poker16.concat(classifyObj.poker17),
+                    sx: classifyObj.poker16.concat(classifyObj.poker17),
+                }
+            }
+        }
+
+        return obj;
     }
 
     getSmallestObjByType(type, oneBigToSmall){
         let classifyObj = this.player.classifyObj;
-
 
         let obj = null;
         if(type === 'one'){
