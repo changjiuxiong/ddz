@@ -167,23 +167,25 @@ class Poker{
                     three: Count3List[0],
                     two: Count2List[0],
                 };
-            }else if(Count4List.length === 1 && Count1List.length === 1){
-                return {
-                    type:'fourWithOne',
-                    poker: pokerList,
-                    four: Count4List[0],
-                    one: Count1List[0],
-                };
             }
 
         }else if(pokerList.length === 6){
 
-            if(Count4List.length === 1 && Count2List.length === 1){
+            if(Count4List.length === 1 && Count1List.length === 2){
+                return {
+                    type:'fourWithOne',
+                    poker: pokerList,
+                    four: Count4List[0],
+                };
+            }
+
+        }else if(pokerList.length === 8){
+
+            if(Count4List.length === 1 && Count2List.length === 2){
                 return {
                     type:'fourWithTwo',
                     poker: pokerList,
                     four: Count4List[0],
-                    two: Count2List[0],
                 };
             }
 
