@@ -521,7 +521,7 @@ class Player{
                         obj = {
                             type: type,
                             poker: poker,
-                            one: poker,
+                            two: poker,
                         };
                         break;
                     }
