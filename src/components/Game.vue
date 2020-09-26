@@ -53,7 +53,7 @@
           </div>
       </div>
       <div v-if="game.playerList[0].lastSendObj&&!game.playerList[0].lastSendObj.poker[0].text" :style="{ marginLeft: deskPokerMarginLeft + 'px' }" style="position: fixed;bottom:350px;width: 100%;height: 200px">
-          <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;">
+          <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;color:#ff0000">
               pass
           </div>
       </div>
@@ -81,7 +81,7 @@
           </div>
       </div>
       <div v-if="game.playerList[2].lastSendObj&&!game.playerList[2].lastSendObj.poker[0].text" style="position: fixed;top:100px;left:200px;height: 200px;">
-          <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;">
+          <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;color:#ff0000">
               pass
           </div>
       </div>
@@ -108,7 +108,7 @@
           </div>
       </div>
       <div v-if="game.playerList[1].lastSendObj&&!game.playerList[1].lastSendObj.poker[0].text" style="position: fixed;top:100px;right:200px;height: 200px;">
-          <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;">
+          <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;color:#ff0000">
               pass
           </div>
       </div>

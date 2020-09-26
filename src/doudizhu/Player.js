@@ -62,7 +62,7 @@ class Player{
             }else{
                 that.ai.playByAllType();
             }
-        },0);
+        },1000);
 
     }
 
