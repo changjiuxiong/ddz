@@ -9,6 +9,14 @@ class AI{
     classify(pokerList){
 
         pokerList.sort(this.sortFunction);
+        if(pokerList.length===0){
+            return {
+                1: [],
+                2: [],
+                3: [],
+                4: [],
+            };
+        }
         let lastPoker = pokerList[0];
         let curList = [lastPoker];
         let lists = [];
@@ -740,7 +748,7 @@ class AI{
                 if(lastObj.one[0].number<15&&classifyObj.poker15.length>0){
                     poker = classifyObj.poker15.slice(0,1);
                 }else{
-                    if(classifyObj.poker17.length<0||classifyObj.poker16.length<0){
+                    if(classifyObj.poker17.length===0||classifyObj.poker16.length===0){
                         if(lastObj.one[0].number<16&&classifyObj.poker16.length>0){
                             poker = classifyObj.poker16;
                         }else if(lastObj.one[0].number<17&&classifyObj.poker17.length>0){
@@ -1093,13 +1101,19 @@ class AI{
                 if(classifyObj.one.length>0){
                     poker = classifyObj.one[0];
                 }else{
-                    if(classifyObj.poker17.length<0||classifyObj.poker16.length<0){
-                        if(classifyObj.poker16.length>0){
-                            poker = classifyObj.poker16;
-                        }else if(classifyObj.poker17.length>0){
-                            poker = classifyObj.poker17;
+
+                    if(classifyObj.poker15.length>0&&classifyObj.poker15.length<4){
+                        poker = classifyObj.poker15.slice(0,1);
+                    }else{
+                        if(classifyObj.poker17.length===0||classifyObj.poker16.length===0){
+                            if(classifyObj.poker16.length>0){
+                                poker = classifyObj.poker16;
+                            }else if(classifyObj.poker17.length>0){
+                                poker = classifyObj.poker17;
+                            }
                         }
                     }
+
                 }
                 if(poker){
                     obj = {
