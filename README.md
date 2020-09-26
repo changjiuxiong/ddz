@@ -1,6 +1,6 @@
 #斗地主
 
-![输入图片说明](https://images.gitee.com/uploads/images/2020/0922/172326_093b2b98_2665180.png "屏幕截图.png")
+![输入图片说明](https://images.gitee.com/uploads/images/2020/0926/180427_65599512_2665180.png "QQ图片20200926174210.png")
 
 npm install
 ```
