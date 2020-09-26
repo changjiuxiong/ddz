@@ -321,13 +321,8 @@ class AI{
     //接牌3 最小接 不拆 不炸 不出王、2、AAA
     getByObj3(lastObj){
         let obj;
-        obj = this.getSmallestObjByObj(lastObj);
+        obj = this.getSmallestObjNoBig(lastObj);
 
-        if(obj){
-            if(lastObj){
-
-            }
-        }
         return obj;
     }
 
@@ -395,7 +390,7 @@ class AI{
     //接牌5
     getByObj5(lastObj){
 
-        let obj = this.getByBoom();
+        let obj = this.getByBoom(lastObj);
 
         if(!obj){
             if(this.player.pokerList[this.player.pokerList.length-1].number>lastObj.one[0].number){
@@ -405,6 +400,20 @@ class AI{
                     one: [this.player.pokerList[this.player.pokerList.length-1]],
                 };
             }
+        }
+
+        return obj;
+
+    }
+
+    //接牌6
+    getByObj6(lastObj){
+
+        let obj;
+        if(lastObj.player.type==='dizhu'){
+            obj = this.getByObj1(lastObj);
+        }else{
+            obj = this.getByObj3(lastObj);
         }
 
         return obj;
@@ -431,9 +440,91 @@ class AI{
                 obj = this.getByObj1(lastObj);
             }
         }else{
+            if(this.player.next.type===this.player.type){
+                obj = this.getByObj6(lastObj);
+            }else{
+                if(this.player.next.pokerList.length===1){
+                    if(lastObj.player.type==='dizhu'){
+                        obj = this.getByObj4(lastObj);
+                    }else{
+                        if(lastObj.type==='one'){
+                            let canNotGet = this.isPlayerCanNotGetOne(lastObj);
+                            if(canNotGet){
+                                //pass
+                            }else{
+                                obj = this.getByObj5(lastObj);
+                            }
+                        }else{
+                            //pass
+                        }
+                    }
+                }else{
+                    obj = this.getByObj6(lastObj);
+                }
+            }
+        }
 
+        if(!obj){
+            obj = {
+                type: 'pass',
+                poker: ['pass'],
+            };
         }
         this.player.deleteFromPokerListAndSendByObj(obj);
+    }
+
+    isPlayerCanNotGetOne(obj){
+        let allPoker = {
+            3:0,
+            4:0,
+            5:0,
+            6:0,
+            7:0,
+            8:0,
+            9:0,
+            10:0,
+            11:0,
+            12:0,
+            13:0,
+            14:0,
+            15:0,
+            16:0,
+            17:0,
+        };
+        let oldPokerList = this.game.oldPokerList;
+        for(let i=0; i<oldPokerList.length; i++){
+            for(let j=0; j<oldPokerList[i].poker.length; j++){
+                allPoker[oldPokerList[i].poker[j].number]++;
+            }
+        }
+        let deskPokerObj = this.game.deskPokerObj;
+        for(let j=0; j<deskPokerObj.poker.length; j++){
+            allPoker[deskPokerObj.poker[j].number]++;
+        }
+        let pokers = this.player.pokerList;
+        for(let j=0; j<pokers.length; j++){
+            allPoker[pokers[j].number]++;
+        }
+
+        let num = obj.one[0].number;
+        let result = true;
+        if(num===16){
+            if(allPoker[17]!==1){
+                return false;
+            }
+        }else if(num===15){
+            if(allPoker[16]!==1||allPoker[17]!==1){
+                return false;
+            }
+        }else{
+            for(let n=num+1; n<=15; n++){
+                if(allPoker[n]!==4){
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     //出牌1
@@ -441,7 +532,11 @@ class AI{
         let types = ['threeWithTwoList','threeWithOneList','threeList','twoList','oneList','threeWithTwo','threeWithOne','three','two','one','four','sx'];
         for(let i=0; i<types.length; i++){
             let obj = this.getSmallestObjByType(types[i]);
+            if(!obj){
+                continue;
+            }
             this.player.deleteFromPokerListAndSendByObj(obj);
+            break;
         }
     }
 
@@ -490,6 +585,135 @@ class AI{
         }
     }
 
+    //接 队友
+    getSmallestObjNoBig(lastObj){
+        let classifyObj = this.player.classifyObj;
+
+        let type = lastObj.type;
+        let obj = null;
+        if(type === 'one'){
+            let poker;
+            if(classifyObj.one.length>0){
+                for(let i=0; i<classifyObj.one.length; i++){
+                    if(classifyObj.one[i][0].number>lastObj.one[0].number){
+                        poker = classifyObj.one[i];
+                        break;
+                    }
+                }
+
+            }
+
+            if(poker){
+                obj = {
+                    type: type,
+                    poker: poker,
+                    one: poker,
+                };
+            }
+        }else if(type === 'two'){
+            let poker;
+
+            if(classifyObj.two.length>0){
+                for(let i=0; i<classifyObj.two.length; i++){
+                    if(classifyObj.two[i][0].number>lastObj.two[0].number){
+                        poker = classifyObj.two[i];
+                        break;
+                    }
+                }
+            }
+
+            if(poker){
+                obj = {
+                    type: type,
+                    poker: poker,
+                    two: poker,
+                };
+            }
+        }else if(type === 'three'){
+            let poker;
+
+            if(classifyObj.three.length>0){
+                for(let i=0; i<classifyObj.three.length; i++){
+                    if(classifyObj.three[i][0].number>lastObj.three[0].number){
+                        if(classifyObj.three[i][0].number<=13){
+                            poker = classifyObj.three[i];
+                        }
+                        break;
+                    }
+                }
+            }
+
+            if(poker){
+                obj = {
+                    type: type,
+                    poker: poker,
+                    three: poker,
+                };
+            }
+        }else if(type === 'threeWithOne'){
+            let pokerThree;
+            let one;
+            if(classifyObj.three.length>0){
+                if(classifyObj.three.length>0){
+                    for(let i=0; i<classifyObj.three.length; i++){
+                        if(classifyObj.three[i][0].number>lastObj.three[0].number){
+                            if(classifyObj.three[i][0].number<=13){
+                                pokerThree = classifyObj.three[i];
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if(classifyObj.one.length>0){
+                one = classifyObj.one[0];
+            }
+
+            if(pokerThree&&one){
+                obj = {
+                    type: type,
+                    poker: pokerThree.concat(one),
+                    three: pokerThree,
+                    one: one,
+                };
+            }
+
+        }else if(type === 'threeWithTwo'){
+
+            let pokerThree;
+            let two;
+            if(classifyObj.three.length>0){
+                if(classifyObj.three.length>0){
+                    for(let i=0; i<classifyObj.three.length; i++){
+                        if(classifyObj.three[i][0].number>lastObj.three[0].number){
+                            if(classifyObj.three[i][0].number<=13){
+                                pokerThree = classifyObj.three[i];
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if(classifyObj.two.length>0){
+                two = classifyObj.two[0];
+            }
+
+            if(pokerThree&&two){
+                obj = {
+                    type: type,
+                    poker: pokerThree.concat(two),
+                    three: pokerThree,
+                    two: two,
+                };
+            }
+
+        }
+
+        return obj;
+    }
+
     //最小接 不拆
     getSmallestObjByObj(lastObj){
         let classifyObj = this.player.classifyObj;
@@ -510,7 +734,7 @@ class AI{
 
             if(!poker){
                 if(lastObj.one[0].number<15&&classifyObj.poker15.length>0){
-                    poker = classifyObj.poker15[0];
+                    poker = classifyObj.poker15.slice(0,1);
                 }else{
                     if(classifyObj.poker17.length<0||classifyObj.poker16.length<0){
                         if(lastObj.one[0].number<16&&classifyObj.poker16.length>0){
@@ -851,7 +1075,7 @@ class AI{
                 }else if(classifyObj.poker16.length>0){
                     poker = classifyObj.poker16;
                 }else if(classifyObj.poker15.length>0){
-                    poker = classifyObj.poker15[0];
+                    poker = classifyObj.poker15.slice(0,1);
                 }else{
                     poker = classifyObj.one[classifyObj.one.length-1];
                 }

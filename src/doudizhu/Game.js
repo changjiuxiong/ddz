@@ -56,7 +56,7 @@ class Game{
         this.timeLoop();
         this.currentPlayer = this.dizhu;
         if(this.currentPlayer.isRobot){
-            this.currentPlayer.playByAI();
+            this.currentPlayer.playByAI2();
         }
     }
 
@@ -69,7 +69,7 @@ class Game{
         this.resetTime();
         this.currentPlayer = this.currentPlayer.next;
         if(this.currentPlayer.isRobot){
-            this.currentPlayer.playByAI();
+            this.currentPlayer.playByAI2();
         }
     }
 

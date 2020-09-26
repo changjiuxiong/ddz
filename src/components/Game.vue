@@ -178,6 +178,7 @@ export default {
   },
   mounted() {
     this.data = this.game.playerList[1].name;
+    window.game = this.game;
   },
   methods:{
       enter: function(e, poker){
