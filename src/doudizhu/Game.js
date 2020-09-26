@@ -9,7 +9,7 @@ class Game{
         this.oldPokerList = [];
         this.currentPlayer = [];
         this.dizhu = null;
-        this.MaxSecond = 999999;
+        this.MaxSecond = 60;
         this.second = this.MaxSecond;
         this.isOver = true;
 
@@ -50,13 +50,11 @@ class Game{
 
     start(){
 
-        // this.playerList[0].getClassifyObj();
-
         this.isOver = false;
         this.timeLoop();
         this.currentPlayer = this.dizhu;
         if(this.currentPlayer.isRobot){
-            this.currentPlayer.playByAI2();
+            this.currentPlayer.playByAI();
         }
     }
 
@@ -69,12 +67,12 @@ class Game{
         this.resetTime();
         this.currentPlayer = this.currentPlayer.next;
         if(this.currentPlayer.isRobot){
-            this.currentPlayer.playByAI2();
+            this.currentPlayer.playByAI();
         }
     }
 
     gameOver(){
-        alert('gameOver! '+this.currentPlayer.name+' ['+this.currentPlayer.type+'] win!');
+        alert('游戏结束! '+this.currentPlayer.name+' ['+this.currentPlayer.type+'] 胜!');
         this.isOver = true;
     }
 

@@ -545,7 +545,11 @@ class AI{
         let types = ['threeWithTwoList','threeWithOneList','threeList','twoList','oneList','threeWithTwo','threeWithOne','three','two','four','sx','one'];
         for(let i=0; i<types.length; i++){
             let obj = this.getSmallestObjByType(types[i], true);
+            if(!obj){
+                continue;
+            }
             this.player.deleteFromPokerListAndSendByObj(obj);
+            break;
         }
     }
 
