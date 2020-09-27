@@ -1,6 +1,11 @@
 <template>
   <div style="user-select: none;position: fixed;left: 0;right: 0;top: 0;bottom: 0;background-repeat: no-repeat;background-size: cover;" :style="{backgroundImage:'url('+require('../img/scene.jpg')+')'}">
-    <div v-show="false" style="width: 300px;height:300px;float: left; position: fixed ; left: 0; top: 0px; background-color: aliceblue; text-align: center">
+      <audio muted autoplay loop controls :style="{ marginLeft: buttonMarginLeft + 'px' }">
+          <source src="../audio/bgm.mp3">
+          您的浏览器不支持 audio 元素。
+      </audio>
+
+      <div v-show="false" style="width: 300px;height:300px;float: left; position: fixed ; left: 0; top: 0px; background-color: aliceblue; text-align: center">
         <span>
             手牌：{{player2Str[1]}}
         </span>
