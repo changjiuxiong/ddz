@@ -4,6 +4,10 @@
 
 #### 软件架构  
 vue  
+
+#### 算法草稿（未整理）  
+![输入图片说明](https://images.gitee.com/uploads/images/2020/1012/152839_3d13d25d_2665180.jpeg "ddz.jpg")
+
   
 #### 使用说明  
 npm install  
