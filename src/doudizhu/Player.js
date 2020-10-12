@@ -4,6 +4,7 @@ import AI from "./AI";
 class Player{
     constructor(param) {
         param = param || {};
+        this.ready = false; //已准备
         this.pokerList = [];
         this.name = param.name || 'noName'+Math.random();
         this.type = param.type || 'nongmin';
@@ -16,7 +17,33 @@ class Player{
             game: param.game,
         });
         this.classifyObj = null;
+        this.lastSendObj = null;
+        this.loopRobot();
+    }
 
+    loopRobot(){
+        let that = this;
+        if(that.isRobot){
+            if(!that.ready){
+                that.setReady();
+            }
+        }
+
+        setTimeout(function(){
+            that.loopRobot();
+        },2000);
+    }
+
+    setReady(){
+        this.ready = true;
+        this.game.setReady();
+    }
+
+    reset(){
+        this.ready = false;
+        this.pokerList = [];
+        this.type = 'nongmin';
+        this.classifyObj = null;
         this.lastSendObj = null;
     }
 

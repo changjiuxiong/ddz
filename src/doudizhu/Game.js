@@ -19,9 +19,12 @@ class Game{
     init(){
         this.initPokerList();
         this.initPlayerList();
-        this.sendPoker();
+    }
 
-        this.start();
+    setReady(){
+        if(this.playerList[0]&&this.playerList[0].ready&&this.playerList[1]&&this.playerList[1].ready&&this.playerList[2]&&this.playerList[2].ready){
+            this.start();
+        }
     }
 
     resetTime(){
@@ -50,12 +53,38 @@ class Game{
 
     start(){
 
+        this.setDiZhu();
+        this.sendPoker();
+
         this.isOver = false;
         this.timeLoop();
         this.currentPlayer = this.dizhu;
         if(this.currentPlayer.isRobot){
             this.currentPlayer.playByAI();
         }
+    }
+
+    setDiZhu(){
+        let dizhuIndex = this.getRandomIntInclusive(0,2);
+        this.playerList[dizhuIndex].type = 'dizhu';
+        this.dizhu = this.playerList[dizhuIndex];
+    }
+
+    reset(){
+
+        this.playerList[0].reset();
+        this.playerList[1].reset();
+        this.playerList[2].reset();
+
+        this.pokerList = [];
+        this.deskPokerObj = null;
+        this.oldPokerList = [];
+        this.currentPlayer = null;
+        this.dizhu = null;
+        this.second = this.MaxSecond;
+        this.isOver = true;
+
+        this.initPokerList();
     }
 
     next(){
@@ -74,6 +103,8 @@ class Game{
     gameOver(){
         alert('游戏结束! '+this.currentPlayer.name+' ['+this.currentPlayer.type+'] 胜!');
         this.isOver = true;
+
+        this.reset();
     }
 
     checkGameOver(){
@@ -116,12 +147,12 @@ class Game{
             game: this,
         });
         let player1 = new Player({
-            name: 'robot1',
+            name: '机器人1',
             isRobot: true,
             game: this,
         });
         let player2 = new Player({
-            name: 'robot2',
+            name: '机器人2',
             isRobot: true,
             game: this,
         });
@@ -134,9 +165,6 @@ class Game{
         this.playerList[1].last = this.playerList[0];
         this.playerList[2].last = this.playerList[1];
 
-        let dizhuIndex = this.getRandomIntInclusive(0,2);
-        this.playerList[dizhuIndex].type = 'dizhu';
-        this.dizhu = this.playerList[dizhuIndex];
     }
 
     initPokerList(){

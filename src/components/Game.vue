@@ -5,17 +5,17 @@
           您的浏览器不支持 audio 元素。
       </audio>
 
-      <div v-show="false" style="width: 300px;height:300px;float: left; position: fixed ; left: 0; top: 0px; background-color: aliceblue; text-align: center">
-        <span>
-            手牌：{{player2Str[1]}}
-        </span>
-    </div>
+<!--      <div v-show="false" style="width: 300px;height:300px;float: left; position: fixed ; left: 0; top: 0px; background-color: aliceblue; text-align: center">-->
+<!--        <span>-->
+<!--            手牌：{{player2Str[1]}}-->
+<!--        </span>-->
+<!--    </div>-->
 
-    <div v-show="false" style="width: 300px;height:300px;float: left; position: fixed ; right: 0; top: 0px; background-color: aliceblue; text-align: center">
-        <span>
-            手牌：{{player1Str[1]}}
-        </span>
-    </div>
+<!--    <div v-show="false" style="width: 300px;height:300px;float: left; position: fixed ; right: 0; top: 0px; background-color: aliceblue; text-align: center">-->
+<!--        <span>-->
+<!--            手牌：{{player1Str[1]}}-->
+<!--        </span>-->
+<!--    </div>-->
 
     <div v-show="false" style="width: 300px;height:300px;float: left; position: fixed ; left: 600px; top: 0px; background-color: aliceblue; text-align: center">
       <div style="width: 300px;word-wrap: break-word;">
@@ -25,11 +25,18 @@
       </div>
     </div>
 
-    <div style="position: fixed;left: 10px;bottom: 10px;">
-      <button @click="reStart" style="height: 50px;font-size:30px;">开始新一局</button>
-    </div>
+<!--    <div style="position: fixed;left: 10px;bottom: 10px;">-->
+<!--      <button @click="reStart" style="height: 50px;font-size:30px;">开始新一局</button>-->
+<!--    </div>-->
 
-      <div :style="{ marginLeft: playerMarginLeft-150 + 'px' }" style="color:white;position: fixed;bottom:0;width: 100%;height: 200px;line-height: 200px;">
+      <div v-show="game.isOver" :style="{ marginLeft: playerMarginLeft-40 + 'px' }" style="font-size: 20px;color:white;position: fixed;bottom:200px;z-index: 999;">
+          <button v-show="!game.playerList[0].ready" @mousedown="setReady" style="font-size: 40px;height: 60px;line-height: 30px;border-radius: 4px;background-color: lawngreen;">{{game.playerList[0].ready?'已准备':'准备'}}</button>
+          <div v-show="game.playerList[0].ready" style="color: red;width:80px;border: solid;border-radius: 4px;position: absolute;">
+              {{game.playerList[0].ready?'已准备':'未准备'}}
+          </div>
+      </div>
+
+      <div v-show="!game.isOver" :style="{ marginLeft: playerMarginLeft-150 + 'px' }" style="color:white;position: fixed;bottom:0;width: 100%;height: 200px;line-height: 200px;">
           你是 <span style="color:red;font-size: 20px">{{game.playerList[0].type==='nongmin'?'农民':'地主'}}</span>
       </div>
       <div :style="{ marginLeft: playerMarginLeft + 'px' }" style="position: fixed;bottom:0;width: 100%;height: 200px;">
@@ -40,7 +47,7 @@
           </div>
       </div>
 
-      <div style="position: fixed;bottom:200px;width: 100%;height: 100px;text-align:left;">
+      <div v-show="game.currentPlayer===game.playerList[0]" style="position: fixed;bottom:200px;width: 100%;height: 100px;text-align:left;">
           <div :style="{ marginLeft: buttonMarginLeft + 'px' }" style="width: 400px;height: 60px;">
               <button @click="pass" style="height: 60px;border-radius: 4px;float:left;font-size:40px;background-color: red">不出</button>
               <button @click="sendPoker2" style="height: 60px;border-radius: 4px;float:right;font-size:40px;background-color: lawngreen">出牌</button>
@@ -64,7 +71,7 @@
       </div>
 
       <div style="position: fixed;top:40px;left: 20px;height:200px;width:100px;border: solid 1px;border-radius: 8px;background-color: azure;text-align: center">
-          <p style="color:red;font-size: 20px">
+          <p v-show="!game.isOver" style="color:red;font-size: 20px">
               {{game.playerList[2].type==='nongmin'?'农民':'地主'}}
           </p>
           <p>
@@ -76,6 +83,9 @@
 
           <div v-show="game.currentPlayer===game.playerList[2]" style="color: red;width:150px;border: solid;border-radius: 4px;position: absolute;bottom:-50px;left: 0">
               请在{{game.second}}秒内出牌
+          </div>
+          <div v-show="game.isOver" style="color: red;width:80px;border: solid;border-radius: 4px;position: absolute;bottom:-50px;left: 0;z-index: 999;">
+              {{game.playerList[2].ready?'已准备':'未准备'}}
           </div>
       </div>
       <div v-if="game.playerList[2].lastSendObj&&game.playerList[2].lastSendObj.poker[0].text" style="position: fixed;top:100px;left:200px;height: 200px;">
@@ -92,7 +102,7 @@
       </div>
 
       <div style="position: fixed;top:40px;right: 20px;height:200px;width:100px;border: solid 1px;border-radius: 8px;background-color: azure;text-align: center">
-          <p style="color:red;font-size: 20px">
+          <p v-show="!game.isOver" style="color:red;font-size: 20px">
               {{game.playerList[1].type==='nongmin'?'农民':'地主'}}
           </p>
           <p>
@@ -103,6 +113,9 @@
           </p>
           <div v-show="game.currentPlayer===game.playerList[1]" style="color: red;width:150px;border: solid;border-radius: 4px;position: absolute;bottom:-50px;right: 0">
               请在{{game.second}}秒内出牌
+          </div>
+          <div v-show="game.isOver" style="color: red;width:80px;border: solid;border-radius: 4px;position: absolute;bottom:-50px;right: 0;z-index: 999;">
+              {{game.playerList[1].ready?'已准备':'未准备'}}
           </div>
       </div>
       <div v-if="game.playerList[1].lastSendObj&&game.playerList[1].lastSendObj.poker[0].text" style="position: fixed;top:100px;right:200px;height: 200px;">
@@ -194,6 +207,12 @@ export default {
     window.game = this.game;
   },
   methods:{
+
+      setReady: function() {
+          let that = this;
+          that.game.playerList[0].setReady();
+      },
+
       enter: function(e, poker){
           if(e.buttons === 1){
               this.pickPoker(poker);
