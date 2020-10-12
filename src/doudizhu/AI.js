@@ -748,12 +748,11 @@ class AI{
                 if(lastObj.one[0].number<15&&classifyObj.poker15.length>0){
                     poker = classifyObj.poker15.slice(0,1);
                 }else{
-                    if(classifyObj.poker17.length===0||classifyObj.poker16.length===0){
-                        if(lastObj.one[0].number<16&&classifyObj.poker16.length>0){
-                            poker = classifyObj.poker16;
-                        }else if(lastObj.one[0].number<17&&classifyObj.poker17.length>0){
-                            poker = classifyObj.poker17;
-                        }
+                    //有王出王
+                    if(lastObj.one[0].number<16&&classifyObj.poker16.length>0){
+                        poker = classifyObj.poker16;
+                    }else if(lastObj.one[0].number<17&&classifyObj.poker17.length>0){
+                        poker = classifyObj.poker17;
                     }
                 }
             }
@@ -1495,8 +1494,8 @@ class AI{
                             let poker = [];
                             let list = [];
                             for(let j=0; j<lastObj.list.length; j++){
-                                poker.concat(Count3List[i+j]);
-                                poker.concat(oneList[i]);
+                                poker = poker.concat(Count3List[i+j]);
+                                poker = poker.concat(oneList[i]);
                                 let threeOne = {
                                     three: Count3List[i+j],
                                     one: oneList[i],
@@ -1538,8 +1537,8 @@ class AI{
                             let poker = [];
                             let list = [];
                             for(let j=0; j<lastObj.list.length; j++){
-                                poker.concat(Count3List[i+j]);
-                                poker.concat(twoList[i]);
+                                poker = poker.concat(Count3List[i+j]);
+                                poker = poker.concat(twoList[i]);
                                 let threeOne = {
                                     three: Count3List[i+j],
                                     two: twoList[i],
