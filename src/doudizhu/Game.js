@@ -7,11 +7,13 @@ class Game{
         this.pokerList = [];
         this.deskPokerObj = null;
         this.oldPokerList = [];
-        this.currentPlayer = [];
+        this.currentPlayer = null;
+        this.currentJiaoFenPlayer = null;
+        this.jiaoFenCount = 0;
         this.dizhu = null;
         this.MaxSecond = 60;
         this.second = this.MaxSecond;
-        this.isOver = true;
+        this.stage = 'ready'; //阶段 ready\jiaoFen\play
 
         this.init();
     }
@@ -23,8 +25,43 @@ class Game{
 
     setReady(){
         if(this.playerList[0]&&this.playerList[0].ready&&this.playerList[1]&&this.playerList[1].ready&&this.playerList[2]&&this.playerList[2].ready){
-            this.start();
+            this.sendPoker();
+            this.startJiaoFen();
         }
+    }
+
+    //开始叫分
+    startJiaoFen(){
+        this.stage = 'jiaoFen';
+        let index = this.getRandomIntInclusive(0,2);
+        this.currentJiaoFenPlayer = this.playerList[index];
+    }
+
+    someOneJiaoFen(){
+        let that = this;
+
+        this.jiaoFenCount++;
+        if(this.jiaoFenCount === 3){
+            setTimeout(function () {
+                that.setDiZhu();
+            },1000);
+            return;
+        }else{
+            this.currentJiaoFenPlayer = this.currentJiaoFenPlayer.next;
+        }
+    }
+
+    setDiZhu(){
+        let sortList = this.playerList.slice(0).sort(this.sortByJiaoFen);
+        let dizhu = sortList[0];
+        dizhu.type = 'dizhu';
+        this.dizhu = dizhu;
+
+        this.start();
+    }
+
+    sortByJiaoFen(a, b){
+        return b.jiaoFen - a.jiaoFen;
     }
 
     resetTime(){
@@ -32,7 +69,7 @@ class Game{
     }
 
     timeLoop(){
-        if(this.isOver){
+        if(this.stage !== 'play'){
             return;
         }
         this.second--;
@@ -53,21 +90,12 @@ class Game{
 
     start(){
 
-        this.setDiZhu();
-        this.sendPoker();
-
-        this.isOver = false;
+        this.stage = 'play';
         this.timeLoop();
         this.currentPlayer = this.dizhu;
         if(this.currentPlayer.isRobot){
             this.currentPlayer.playByAI();
         }
-    }
-
-    setDiZhu(){
-        let dizhuIndex = this.getRandomIntInclusive(0,2);
-        this.playerList[dizhuIndex].type = 'dizhu';
-        this.dizhu = this.playerList[dizhuIndex];
     }
 
     reset(){
@@ -80,9 +108,11 @@ class Game{
         this.deskPokerObj = null;
         this.oldPokerList = [];
         this.currentPlayer = null;
+        this.currentJiaoFenPlayer = null;
+        this.jiaoFenCount = 0;
         this.dizhu = null;
         this.second = this.MaxSecond;
-        this.isOver = true;
+        this.stage = 'ready';
 
         this.initPokerList();
     }
@@ -102,7 +132,6 @@ class Game{
 
     gameOver(){
         alert('游戏结束! '+this.currentPlayer.name+' ['+this.currentPlayer.type+'] 胜!');
-        this.isOver = true;
 
         this.reset();
     }
@@ -120,6 +149,15 @@ class Game{
         }
     }
 
+    sendDiZhuPoker(){
+        do{
+            let poker = this.pokerList.splice(0,1)[0];
+            this.dizhu.addPoker(poker);
+        }while(this.pokerList.length>0);
+
+        this.dizhu.sortPoker();
+    }
+
     sendPoker(){
         let player = this.playerList[0];
         do{
@@ -128,11 +166,6 @@ class Game{
             player.addPoker(poker);
             player = player.next;
         }while(this.pokerList.length>3);
-
-        do{
-            let poker = this.pokerList.splice(0,1)[0];
-            this.dizhu.addPoker(poker);
-        }while(this.pokerList.length>0);
 
         for(let i=0; i<this.playerList.length; i++){
             this.playerList[i].sortPoker();

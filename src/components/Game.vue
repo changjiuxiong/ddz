@@ -29,14 +29,24 @@
 <!--      <button @click="reStart" style="height: 50px;font-size:30px;">开始新一局</button>-->
 <!--    </div>-->
 
-      <div v-show="game.isOver" :style="{ marginLeft: playerMarginLeft-40 + 'px' }" style="font-size: 20px;color:white;position: fixed;bottom:200px;z-index: 999;">
+      <div v-show="game.stage==='ready'" :style="{ marginLeft: playerMarginLeft-40 + 'px' }" style="font-size: 20px;color:white;position: fixed;bottom:200px;z-index: 999;">
           <button v-show="!game.playerList[0].ready" @mousedown="setReady" style="font-size: 40px;height: 60px;line-height: 30px;border-radius: 4px;background-color: lawngreen;">{{game.playerList[0].ready?'已准备':'准备'}}</button>
           <div v-show="game.playerList[0].ready" style="color: red;width:80px;border: solid;border-radius: 4px;position: absolute;">
               {{game.playerList[0].ready?'已准备':'未准备'}}
           </div>
       </div>
 
-      <div v-show="!game.isOver" :style="{ marginLeft: playerMarginLeft-150 + 'px' }" style="color:white;position: fixed;bottom:0;width: 100%;height: 200px;line-height: 200px;">
+      <div v-show="game.stage==='jiaoFen'&&game.currentJiaoFenPlayer===game.playerList[0]" :style="{ marginLeft: playerMarginLeft-40 + 'px' }" style="font-size: 20px;color:white;position: fixed;bottom:200px;z-index: 999;">
+          <button v-show="true" @mousedown="game.playerList[0].setJiaoFen(0)" style="font-size: 40px;height: 60px;line-height: 30px;border-radius: 4px;background-color: lawngreen;">不叫</button>
+          <button v-show="true" @mousedown="game.playerList[0].setJiaoFen(1)" style="font-size: 40px;height: 60px;line-height: 30px;border-radius: 4px;background-color: lawngreen;">1分</button>
+          <button v-show="true" @mousedown="game.playerList[0].setJiaoFen(2)" style="font-size: 40px;height: 60px;line-height: 30px;border-radius: 4px;background-color: lawngreen;">2分</button>
+          <button v-show="true" @mousedown="game.playerList[0].setJiaoFen(3)" style="font-size: 40px;height: 60px;line-height: 30px;border-radius: 4px;background-color: lawngreen;">3分</button>
+<!--          <div v-show="game.playerList[0].ready" style="color: red;width:80px;border: solid;border-radius: 4px;position: absolute;">-->
+<!--              {{game.playerList[0].ready?'已准备':'未准备'}}-->
+<!--          </div>-->
+      </div>
+
+      <div v-show="game.stage==='play'" :style="{ marginLeft: playerMarginLeft-150 + 'px' }" style="color:white;position: fixed;bottom:0;width: 100%;height: 200px;line-height: 200px;">
           你是 <span style="color:red;font-size: 20px">{{game.playerList[0].type==='nongmin'?'农民':'地主'}}</span>
       </div>
       <div :style="{ marginLeft: playerMarginLeft + 'px' }" style="position: fixed;bottom:0;width: 100%;height: 200px;">
@@ -71,7 +81,7 @@
       </div>
 
       <div style="position: fixed;top:40px;left: 20px;height:200px;width:100px;border: solid 1px;border-radius: 8px;background-color: azure;text-align: center">
-          <p v-show="!game.isOver" style="color:red;font-size: 20px">
+          <p v-show="game.stage==='play'" style="color:red;font-size: 20px">
               {{game.playerList[2].type==='nongmin'?'农民':'地主'}}
           </p>
           <p>
@@ -84,7 +94,7 @@
           <div v-show="game.currentPlayer===game.playerList[2]" style="color: red;width:150px;border: solid;border-radius: 4px;position: absolute;bottom:-50px;left: 0">
               请在{{game.second}}秒内出牌
           </div>
-          <div v-show="game.isOver" style="color: red;width:80px;border: solid;border-radius: 4px;position: absolute;bottom:-50px;left: 0;z-index: 999;">
+          <div v-show="game.stage==='ready'" style="color: red;width:80px;border: solid;border-radius: 4px;position: absolute;bottom:-50px;left: 0;z-index: 999;">
               {{game.playerList[2].ready?'已准备':'未准备'}}
           </div>
       </div>
@@ -100,9 +110,14 @@
               pass
           </div>
       </div>
+      <div v-if="game.stage==='jiaoFen'" style="position: fixed;top:100px;left:200px;height: 200px;">
+          <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;color:#ff0000">
+              {{game.playerList[2].jiaoFen}}分
+          </div>
+      </div>
 
       <div style="position: fixed;top:40px;right: 20px;height:200px;width:100px;border: solid 1px;border-radius: 8px;background-color: azure;text-align: center">
-          <p v-show="!game.isOver" style="color:red;font-size: 20px">
+          <p v-show="game.stage==='play'" style="color:red;font-size: 20px">
               {{game.playerList[1].type==='nongmin'?'农民':'地主'}}
           </p>
           <p>
@@ -114,7 +129,7 @@
           <div v-show="game.currentPlayer===game.playerList[1]" style="color: red;width:150px;border: solid;border-radius: 4px;position: absolute;bottom:-50px;right: 0">
               请在{{game.second}}秒内出牌
           </div>
-          <div v-show="game.isOver" style="color: red;width:80px;border: solid;border-radius: 4px;position: absolute;bottom:-50px;right: 0;z-index: 999;">
+          <div v-show="game.stage==='ready'" style="color: red;width:80px;border: solid;border-radius: 4px;position: absolute;bottom:-50px;right: 0;z-index: 999;">
               {{game.playerList[1].ready?'已准备':'未准备'}}
           </div>
       </div>
@@ -128,6 +143,11 @@
       <div v-if="game.playerList[1].lastSendObj&&!game.playerList[1].lastSendObj.poker[0].text" style="position: fixed;top:100px;right:200px;height: 200px;">
           <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;color:#ff0000">
               pass
+          </div>
+      </div>
+      <div v-if="game.stage==='jiaoFen'" style="position: fixed;top:100px;right:200px;height: 200px;">
+          <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;color:#ff0000">
+              {{game.playerList[1].jiaoFen}}分
           </div>
       </div>
 
