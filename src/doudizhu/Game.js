@@ -5,6 +5,7 @@ class Game{
     constructor() {
         this.playerList = [];
         this.pokerList = [];
+        this.dizhuPokerList = [];
         this.deskPokerObj = null;
         this.oldPokerList = [];
         this.currentPlayer = null;
@@ -106,6 +107,7 @@ class Game{
         this.playerList[2].reset();
 
         this.pokerList = [];
+        this.dizhuPokerList = [];
         this.deskPokerObj = null;
         this.oldPokerList = [];
         this.currentPlayer = null;
@@ -171,6 +173,8 @@ class Game{
         for(let i=0; i<this.playerList.length; i++){
             this.playerList[i].sortPoker();
         }
+
+        this.dizhuPokerList = this.pokerList.slice(0);
     }
 
     initPlayerList(){
@@ -219,21 +223,6 @@ class Game{
             this.pokerList.push(poker);
         }
 
-    }
-
-    pokerListToString(){
-        let result = '';
-        result += Poker.pokerListToString(this.pokerList);
-        result += '\n';
-        for(let i=0; i<this.oldPokerList.length; i++){
-            result += Poker.pokerListToString(this.oldPokerList[i].poker);
-            if(i<this.oldPokerList.length-1){
-                result += ',';
-            }
-        }
-        result += '\n';
-        result += this.deskPokerObj?Poker.pokerListToString(this.deskPokerObj.poker):'';
-        return result;
     }
 
     getRandomIntInclusive(min, max) {

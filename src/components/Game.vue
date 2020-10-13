@@ -1,33 +1,20 @@
 <template>
   <div style="user-select: none;position: fixed;left: 0;right: 0;top: 0;bottom: 0;background-repeat: no-repeat;background-size: cover;" :style="{backgroundImage:'url('+require('../img/scene.jpg')+')'}">
-      <audio muted autoplay loop controls :style="{ marginLeft: buttonMarginLeft + 'px' }">
+      <audio muted autoplay loop controls style="position: fixed; left: 0;bottom: 0">
           <source src="../audio/bgm.mp3">
           您的浏览器不支持 audio 元素。
       </audio>
 
-<!--      <div v-show="false" style="width: 300px;height:300px;float: left; position: fixed ; left: 0; top: 0px; background-color: aliceblue; text-align: center">-->
-<!--        <span>-->
-<!--            手牌：{{player2Str[1]}}-->
-<!--        </span>-->
-<!--    </div>-->
-
-<!--    <div v-show="false" style="width: 300px;height:300px;float: left; position: fixed ; right: 0; top: 0px; background-color: aliceblue; text-align: center">-->
-<!--        <span>-->
-<!--            手牌：{{player1Str[1]}}-->
-<!--        </span>-->
-<!--    </div>-->
-
-    <div v-show="false" style="width: 300px;height:300px;float: left; position: fixed ; left: 600px; top: 0px; background-color: aliceblue; text-align: center">
-      <div style="width: 300px;word-wrap: break-word;">
-          已出的牌：
-          <br/>
-          {{deskStr[1]}}
+      <div v-if="game.stage==='play'" :style="{ marginLeft: dizhuPokerMarginLeft + 'px' }" style="position: fixed;top:10px;width: 100%;height: 100px">
+          <div style="color: red">
+              地主牌
+          </div>
+          <div v-for="item in game.dizhuPokerList" class="pokerDizhu" :class="{ s:item.number===16, x:item.number===17 }">
+              <span v-show="item.number<16">
+                  {{item.text}}
+              </span>
+          </div>
       </div>
-    </div>
-
-<!--    <div style="position: fixed;left: 10px;bottom: 10px;">-->
-<!--      <button @click="reStart" style="height: 50px;font-size:30px;">开始新一局</button>-->
-<!--    </div>-->
 
       <div v-show="game.stage==='ready'" :style="{ marginLeft: playerMarginLeft-40 + 'px' }" style="font-size: 20px;color:white;position: fixed;bottom:200px;z-index: 999;">
           <button v-show="!game.playerList[0].ready" @mousedown="setReady" style="font-size: 40px;height: 60px;line-height: 30px;border-radius: 4px;background-color: lawngreen;">{{game.playerList[0].ready?'已准备':'准备'}}</button>
@@ -41,9 +28,6 @@
           <button v-show="true" @mousedown="game.playerList[0].setJiaoFen(1)" style="font-size: 40px;height: 60px;line-height: 30px;border-radius: 4px;background-color: lawngreen;">1分</button>
           <button v-show="true" @mousedown="game.playerList[0].setJiaoFen(2)" style="font-size: 40px;height: 60px;line-height: 30px;border-radius: 4px;background-color: lawngreen;">2分</button>
           <button v-show="true" @mousedown="game.playerList[0].setJiaoFen(3)" style="font-size: 40px;height: 60px;line-height: 30px;border-radius: 4px;background-color: lawngreen;">3分</button>
-<!--          <div v-show="game.playerList[0].ready" style="color: red;width:80px;border: solid;border-radius: 4px;position: absolute;">-->
-<!--              {{game.playerList[0].ready?'已准备':'未准备'}}-->
-<!--          </div>-->
       </div>
 
       <div v-show="game.stage==='play'" :style="{ marginLeft: playerMarginLeft-150 + 'px' }" style="color:white;position: fixed;bottom:0;width: 100%;height: 200px;line-height: 200px;">
@@ -201,48 +185,8 @@ export default {
       playerJiaoFenMargin: function(){
           return window.innerWidth/2 - 30;
       },
-
-      deskPoker: function(){
-          if(this.game.deskPokerObj && this.game.deskPokerObj.poker){
-              if(this.game.deskPokerObj.poker[0] && this.game.deskPokerObj.poker[0].text){
-                return this.game.deskPokerObj.poker;
-              }
-          }
-          return [];
-      },
-        player2Str: function () {
-          let game = this.game;
-          let i = 2;
-          return [
-              game.playerList[i].name+' : '+game.playerList[i].type+' : '+game.playerList[i].pokerList.length,
-              game.playerList[i].pokerListToString(),
-              game.playerList[i].lastSendObjToString()
-          ];
-        },
-      player1Str: function () {
-          let game = this.game;
-          let i = 1;
-          return [
-              game.playerList[i].name+' : '+game.playerList[i].type+' : '+game.playerList[i].pokerList.length,
-              game.playerList[i].pokerListToString(),
-              game.playerList[i].lastSendObjToString()
-          ];
-      },
-      player0Str: function () {
-          let game = this.game;
-          let i = 0;
-          return [
-              game.playerList[i].name+' : '+game.playerList[i].type+' : '+game.playerList[i].pokerList.length,
-              game.playerList[i].pokerListToString(),
-              game.playerList[i].lastSendObjToString()
-          ];
-      },
-      deskStr: function () {
-          let game = this.game;
-          return [
-              'desk',
-              game.pokerListToString()
-          ];
+      dizhuPokerMarginLeft: function(){
+          return (window.innerWidth - (this.game.dizhuPokerList.length*50))/2;
       },
   },
   mounted() {
@@ -284,21 +228,8 @@ export default {
           }
       },
 
-      sendPoker() {
-        let game = this.game;
-        let success = game.playerList[0].playByString(this.playerStr);
-        if(success){
-            this.playerStr='';
-        }
-      },
-
     pass() {
       this.game.playerList[0].playByString('pass');
-    },
-
-    reStart() {
-        this.game = new Game();
-        this.playerStr='';
     },
 
   },
@@ -309,6 +240,12 @@ export default {
     .pokerDesk{
         height:100%;width:100px;border: solid 1px;border-radius: 16px;float: left;margin-left:-50px;background-color: azure;
         font-size: 30px;
+        background-repeat: no-repeat;background-size: cover;
+    }
+
+    .pokerDizhu{
+        height:100%;width:50px;border: solid 1px;border-radius: 8px;float: left;margin-left:-25px;background-color: azure;
+        font-size: 20px;
         background-repeat: no-repeat;background-size: cover;
     }
 
