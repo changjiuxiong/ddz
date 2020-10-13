@@ -4,6 +4,8 @@ import AI from "./AI";
 class Player{
     constructor(param) {
         param = param || {};
+        this.ready = false; //已准备
+        this.jiaoFen = 0; //叫分
         this.pokerList = [];
         this.name = param.name || 'noName'+Math.random();
         this.type = param.type || 'nongmin';
@@ -16,7 +18,45 @@ class Player{
             game: param.game,
         });
         this.classifyObj = null;
+        this.lastSendObj = null;
 
+        if(this.isRobot){
+            this.loopRobot();
+        }
+    }
+
+    setJiaoFen(fen){
+        this.jiaoFen = fen;
+        this.game.someOneJiaoFen();
+    }
+
+    loopRobot(){
+        let that = this;
+        if(that.isRobot){
+            if(!that.ready){
+                that.setReady();
+            }
+        }
+        if(that.game.stage==='jiaoFen' && that.game.currentJiaoFenPlayer === that){
+            that.setJiaoFen(3);
+        }
+
+        setTimeout(function(){
+            that.loopRobot();
+        },2000);
+    }
+
+    setReady(){
+        this.ready = true;
+        this.game.setReady();
+    }
+
+    reset(){
+        this.ready = false;
+        this.jiaoFen = 0;
+        this.pokerList = [];
+        this.type = 'nongmin';
+        this.classifyObj = null;
         this.lastSendObj = null;
     }
 
