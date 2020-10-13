@@ -57,6 +57,7 @@ class Game{
         dizhu.type = 'dizhu';
         this.dizhu = dizhu;
 
+        this.sendDiZhuPoker();
         this.start();
     }
 
