@@ -306,6 +306,25 @@ class AI{
         };
     }
 
+    getJiaoFen(){
+        this.player.getClassifyObj();
+        let classifyObj = this.player.classifyObj;
+        let num15 = classifyObj.poker15.length;
+        let num16 = classifyObj.poker16.length;
+        let num17 = classifyObj.poker17.length;
+
+        let score = num15*2 + num16*3 +num17*4;
+        if(score<8){
+            return 0;
+        }else if(score<10){
+            return 1;
+        }else if(score<12){
+            return 2;
+        }else{
+            return 3;
+        }
+    }
+
     //接牌1 最小接 不拆 炸
     getByObj1(lastObj){
         let obj;

@@ -38,7 +38,8 @@ class Player{
             }
         }
         if(that.game.stage==='jiaoFen' && that.game.currentJiaoFenPlayer === that){
-            that.setJiaoFen(3);
+            let fen = that.ai.getJiaoFen();
+            that.setJiaoFen(fen);
         }
 
         setTimeout(function(){
@@ -63,7 +64,7 @@ class Player{
     //组牌
     getClassifyObj(){
         this.classifyObj = this.ai.getClassifyObj(this.pokerList);
-        console.log(this.classifyObj);
+        // console.log(this.classifyObj);
     }
 
     addPoker(poker){
