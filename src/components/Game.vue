@@ -81,7 +81,12 @@
       </div>
       <div v-if="game.stage==='jiaoFen'&&game.playerList[0].jiaoFen!=-1" :style="{ marginLeft: playerJiaoFenMargin + 'px' }" style="position: fixed;bottom:350px;width: 100%;height: 200px">
           <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;color:#ff0000">
-              {{game.playerList[0].jiaoFen}}分
+              <span v-if="game.playerList[0].jiaoFen!=0">
+                  {{game.playerList[0].jiaoFen}}分
+              </span>
+              <span v-if="game.playerList[0].jiaoFen==0">
+                  不叫
+              </span>
           </div>
       </div>
 
@@ -117,7 +122,12 @@
       </div>
       <div v-if="game.stage==='jiaoFen'&&game.playerList[2].jiaoFen!=-1" style="position: fixed;top:100px;left:200px;height: 200px;">
           <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;color:#ff0000">
-              {{game.playerList[2].jiaoFen}}分
+              <span v-if="game.playerList[2].jiaoFen!=0">
+                  {{game.playerList[2].jiaoFen}}分
+              </span>
+              <span v-if="game.playerList[2].jiaoFen==0">
+                  不叫
+              </span>
           </div>
       </div>
 
@@ -152,7 +162,12 @@
       </div>
       <div v-if="game.stage==='jiaoFen'&&game.playerList[1].jiaoFen!=-1" style="position: fixed;top:100px;right:200px;height: 200px;">
           <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;color:#ff0000">
-              {{game.playerList[1].jiaoFen}}分
+              <span v-if="game.playerList[1].jiaoFen!=0">
+                  {{game.playerList[1].jiaoFen}}分
+              </span>
+              <span v-if="game.playerList[1].jiaoFen==0">
+                  不叫
+              </span>
           </div>
       </div>
 
