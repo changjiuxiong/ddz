@@ -79,6 +79,11 @@
               pass
           </div>
       </div>
+      <div v-if="game.stage==='jiaoFen'&&game.playerList[0].jiaoFen!=-1" :style="{ marginLeft: playerJiaoFenMargin + 'px' }" style="position: fixed;bottom:350px;width: 100%;height: 200px">
+          <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;color:#ff0000">
+              {{game.playerList[0].jiaoFen}}分
+          </div>
+      </div>
 
       <div style="position: fixed;top:40px;left: 20px;height:200px;width:100px;border: solid 1px;border-radius: 8px;background-color: azure;text-align: center">
           <p v-show="game.stage==='play'" style="color:red;font-size: 20px">
@@ -110,7 +115,7 @@
               pass
           </div>
       </div>
-      <div v-if="game.stage==='jiaoFen'" style="position: fixed;top:100px;left:200px;height: 200px;">
+      <div v-if="game.stage==='jiaoFen'&&game.playerList[2].jiaoFen!=-1" style="position: fixed;top:100px;left:200px;height: 200px;">
           <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;color:#ff0000">
               {{game.playerList[2].jiaoFen}}分
           </div>
@@ -145,7 +150,7 @@
               pass
           </div>
       </div>
-      <div v-if="game.stage==='jiaoFen'" style="position: fixed;top:100px;right:200px;height: 200px;">
+      <div v-if="game.stage==='jiaoFen'&&game.playerList[1].jiaoFen!=-1" style="position: fixed;top:100px;right:200px;height: 200px;">
           <div style="height:100%;width:100px;float: left;margin-left:-50px;font-size: 50px;color:#ff0000">
               {{game.playerList[1].jiaoFen}}分
           </div>
@@ -177,6 +182,9 @@ export default {
       },
       buttonMarginLeft: function(){
           return (window.innerWidth - 400)/2;
+      },
+      playerJiaoFenMargin: function(){
+          return window.innerWidth/2 - 30;
       },
 
       deskPoker: function(){

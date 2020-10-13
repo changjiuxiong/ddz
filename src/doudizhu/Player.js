@@ -5,7 +5,7 @@ class Player{
     constructor(param) {
         param = param || {};
         this.ready = false; //已准备
-        this.jiaoFen = 0; //叫分
+        this.jiaoFen = -1; //叫分
         this.pokerList = [];
         this.name = param.name || 'noName'+Math.random();
         this.type = param.type || 'nongmin';
@@ -53,7 +53,7 @@ class Player{
 
     reset(){
         this.ready = false;
-        this.jiaoFen = 0;
+        this.jiaoFen = -1;
         this.pokerList = [];
         this.type = 'nongmin';
         this.classifyObj = null;
