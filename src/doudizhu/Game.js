@@ -3,6 +3,8 @@ import Poker from "./Poker";
 
 class Game{
     constructor() {
+        this.testModel = false; //测试模式 三个AI自动打牌
+
         this.playerList = [];
         this.pokerList = [];
         this.dizhuPokerList = [];
@@ -12,8 +14,10 @@ class Game{
         this.currentJiaoFenPlayer = null;
         this.jiaoFenCount = 0;
         this.dizhu = null;
-        this.MaxSecond = 60;
+        this.MaxSecond = 20;
         this.second = this.MaxSecond;
+        this.BaseScore = 1; //每局底分
+        this.score = this.BaseScore; //当前局分
         this.stage = 'ready'; //阶段 ready\jiaoFen\play
 
         this.init();
@@ -40,12 +44,17 @@ class Game{
 
     someOneJiaoFen(){
         let that = this;
-
         this.jiaoFenCount++;
+
+        let timeWait = 1000;
+        if(that.testModel){
+            timeWait = 0;
+        }
+
         if(this.jiaoFenCount === 3){
             setTimeout(function () {
                 that.setDiZhu();
-            },1000);
+            },timeWait);
             return;
         }else{
             this.currentJiaoFenPlayer = this.currentJiaoFenPlayer.next;
@@ -53,8 +62,22 @@ class Game{
     }
 
     setDiZhu(){
+
         let sortList = this.playerList.slice(0).sort(this.sortByJiaoFen);
-        let dizhu = sortList[0];
+
+        let dizhu;
+        if(sortList[0].jiaoFen === sortList[1].jiaoFen){
+            if(sortList[0].jiaoFen === sortList[2].jiaoFen){
+                let index = this.getRandomIntInclusive(0,2);
+                dizhu = sortList[index];
+            }else{
+                let index = this.getRandomIntInclusive(0,1);
+                dizhu = sortList[index];
+            }
+        }else{
+            dizhu = sortList[0];
+        }
+
         dizhu.type = 'dizhu';
         this.dizhu = dizhu;
 
@@ -115,17 +138,37 @@ class Game{
         this.jiaoFenCount = 0;
         this.dizhu = null;
         this.second = this.MaxSecond;
+        this.score = this.BaseScore;
         this.stage = 'ready';
 
         this.initPokerList();
     }
 
-    next(){
+    //有玩家出牌
+    someOneSendPoker(obj){
+        this.clearDesk();
+        this.deskPokerObj = obj;
+        this.checkBoom(obj);
+
         let over = this.checkGameOver();
         if(over){
             this.gameOver();
             return;
         }
+
+        this.next();
+    }
+
+    //炸弹分数翻1番 火箭翻2番
+    checkBoom(obj){
+        if(obj.type === 'four'){
+            this.score *= 2;
+        }else if(obj.type === 'four'){
+            this.score *= 4;
+        }
+    }
+
+    next(){
         this.resetTime();
         this.currentPlayer = this.currentPlayer.next;
         if(this.currentPlayer.isRobot){
@@ -134,9 +177,39 @@ class Game{
     }
 
     gameOver(){
-        alert('游戏结束! '+this.currentPlayer.name+' ['+this.currentPlayer.type+'] 胜!');
-
+        if(!this.testModel){
+            alert('游戏结束! '+this.currentPlayer.name+' ['+this.currentPlayer.type+'] 胜!');
+        }else{
+            console.log(this.playerList[0].money+' '+this.playerList[1].money+' '+this.playerList[2].money+' ');
+        }
+        this.settleMoney();
         this.reset();
+    }
+
+    //结算金币得失
+    settleMoney(){
+
+        if(this.currentPlayer.type === 'nongmin'){
+            this.currentPlayer.money += this.score;
+
+            if(this.currentPlayer.next.type === 'nongmin'){
+                this.currentPlayer.next.money += this.score;
+            }else{
+                this.currentPlayer.next.money -= this.score*2;
+            }
+
+            if(this.currentPlayer.last.type === 'nongmin'){
+                this.currentPlayer.last.money += this.score;
+            }else{
+                this.currentPlayer.last.money -= this.score*2;
+            }
+
+        }else{
+            this.currentPlayer.money += this.score*2;
+            this.currentPlayer.next.money -= this.score;
+            this.currentPlayer.last.money -= this.score;
+        }
+
     }
 
     checkGameOver(){
@@ -178,10 +251,11 @@ class Game{
     }
 
     initPlayerList(){
+        let that = this;
         this.playerList = [];
         let player0 = new Player({
             name: 'player',
-            isRobot: false,
+            isRobot: that.testModel,
             game: this,
         });
         let player1 = new Player({

@@ -30,8 +30,11 @@
           <button v-show="true" @mousedown="game.playerList[0].setJiaoFen(3)" style="font-size: 40px;height: 60px;line-height: 30px;border-radius: 4px;background-color: lawngreen;">3分</button>
       </div>
 
-      <div v-show="game.stage==='play'" :style="{ marginLeft: playerMarginLeft-150 + 'px' }" style="color:white;position: fixed;bottom:0;width: 100%;height: 200px;line-height: 200px;">
+      <div v-show="game.stage==='play'" :style="{ marginLeft: playerMarginLeft-150 + 'px' }" style="color:white;position: fixed;bottom:0;width: 100%;height: 200px;">
           你是 <span style="color:red;font-size: 20px">{{game.playerList[0].type==='nongmin'?'农民':'地主'}}</span>
+      </div>
+      <div :style="{ marginLeft: playerMarginLeft-150 + 'px' }" style="color:white;position: fixed;bottom:0;width: 100%;height: 100px;">
+          金币: <span style="color:greenyellow;font-size: 20px">{{game.playerList[0].money}}</span>
       </div>
       <div :style="{ marginLeft: playerMarginLeft + 'px' }" style="position: fixed;bottom:0;width: 100%;height: 200px;">
           <div @mouseenter="enter($event,item)" @mousedown="pickPoker(item)" v-for="item in game.playerList[0].pokerList" :class="{ selected: item.selected, s:item.number===16, x:item.number===17 }" class="poker pokerDesk" style="">
@@ -82,6 +85,9 @@
               {{game.playerList[2].name}}
           </p>
           <p>
+              金币: <span style="color:green;">{{game.playerList[2].money}}</span>
+          </p>
+          <p>
               剩余 {{game.playerList[2].pokerList.length}} 张
           </p>
 
@@ -121,6 +127,9 @@
           </p>
           <p>
               {{game.playerList[1].name}}
+          </p>
+          <p>
+              金币: <span style="color:green;">{{game.playerList[1].money}}</span>
           </p>
           <p>
               剩余 {{game.playerList[1].pokerList.length}} 张

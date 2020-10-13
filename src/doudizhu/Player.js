@@ -4,6 +4,7 @@ import AI from "./AI";
 class Player{
     constructor(param) {
         param = param || {};
+        this.money = 1000; //金币
         this.ready = false; //已准备
         this.jiaoFen = -1; //叫分
         this.pokerList = [];
@@ -32,19 +33,25 @@ class Player{
 
     loopRobot(){
         let that = this;
-        if(that.isRobot){
-            if(!that.ready){
-                that.setReady();
-            }
-        }
-        if(that.game.stage==='jiaoFen' && that.game.currentJiaoFenPlayer === that){
-            let fen = that.ai.getJiaoFen();
-            that.setJiaoFen(fen);
+
+        let timeWait = 1000;
+        if(that.game.testModel){
+            timeWait = 0;
         }
 
         setTimeout(function(){
+            if(that.isRobot){
+                if(!that.ready){
+                    that.setReady();
+                }
+            }
+            if(that.game.stage==='jiaoFen' && that.game.currentJiaoFenPlayer === that){
+                let fen = that.ai.getJiaoFen();
+                that.setJiaoFen(fen);
+            }
+
             that.loopRobot();
-        },2000);
+        },timeWait);
     }
 
     setReady(){
@@ -96,6 +103,11 @@ class Player{
 
         that.getClassifyObj();
 
+        let timeWait = 1000;
+        if(that.game.testModel){
+            timeWait = 0;
+        }
+
         setTimeout(function () {
             let lastObj = that.getLastObj();
             if(lastObj){
@@ -103,16 +115,15 @@ class Player{
             }else{
                 that.ai.playByAllType();
             }
-        },1000);
+        },timeWait);
 
     }
 
     sendPoker(obj){
         obj.player = this;
-        this.game.clearDesk();
         this.lastSendObj = obj;
-        this.game.deskPokerObj = obj;
-        this.game.next();
+
+        this.game.someOneSendPoker(obj);
     }
 
     deleteFromPokerListAndSendByObj(obj){
